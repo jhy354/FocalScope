@@ -180,12 +180,14 @@ public class Opener {
 		"Open/Save Using JFileChooser" is checked in EditOptions/Misc. */
 	public void openMultiple() {
 		LookAndFeel saveLookAndFeel = Java2.getLookAndFeel();
-		Java2.setSystemLookAndFeel();
+		UITheme.setFileChooserLookAndFeel();
 		// run JFileChooser in a separate thread to avoid possible thread deadlocks
 		try {
 			EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
 					JFileChooser fc = new JFileChooser();
+					UITheme.styleFileChooser(fc, "Open", false);
+					UITheme.setSupportedImageFilter(fc);
 					fc.setMultiSelectionEnabled(true);
 					fc.setDragEnabled(true);
 					fc.setTransferHandler(new DragAndDropHandler(fc));
@@ -208,6 +210,7 @@ public class Opener {
 				}
 			});
 		} catch (Exception e) {}
+		Java2.setLookAndFeel(saveLookAndFeel);
 		if (omDirectory==null) return;
 		OpenDialog.setDefaultDirectory(omDirectory);
 		for (int i=0; i<omFiles.length; i++) {
@@ -218,7 +221,6 @@ public class Opener {
 			if (i==0 && !error)
 				Menus.addOpenRecentItem(path);
 		}
-		Java2.setLookAndFeel(saveLookAndFeel);
 	}
 	
 	/**

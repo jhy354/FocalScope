@@ -1,9 +1,9 @@
 # Build FocalScope and create a portable Windows package with a bundled JRE.
 # Usage:
 #   .\package.ps1
-#   .\package.ps1 -Version "2.1.1"
+#   .\package.ps1 -Version "2.2.0"
 param(
-    [string]$Version = "2.1.1"
+    [string]$Version = "2.2.0"
 )
 
 $ErrorActionPreference = "Stop"

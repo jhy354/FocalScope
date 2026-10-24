@@ -1,4 +1,20 @@
-# ImageX 2.0.4
+# FocalScope 2.2.0
+
+发布日期：2026-10-25
+
+FocalScope 2.2.0 新增自有 `.fsz` 容器格式，并统一了文件打开体验。
+
+## 更新
+
+- 新增 `.fsz` 格式：ZIP 容器，保存图像、标定、属性、当前 ROI、Overlay 和 ROI Manager。
+- “保存”“另存为...”使用 `.fsz`；原“另存为”子菜单更名为“导出”。
+- “打开”支持 `.fsz`，并与主页使用同一套文件选择器。
+- 修复 LUT 菜单翻译后出现的 `Unrecognized command` 错误，并补全“更多工具”翻译。
+- ROI Manager 等工具窗口置顶；工具栏新增 ROI Manager 和 ROI 长度标注按钮。
+
+---
+
+# 历史版本：ImageX 2.0.4
 
 发布日期：2026-10-24
 

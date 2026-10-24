@@ -11,7 +11,7 @@
 
 	<groupId>com.github.jhy354</groupId>
 	<artifactId>focalscope</artifactId>
-	<version>2.1.1</version>
+	<version>2.2.0</version>
 
 	<name>FocalScope</name>
 	<description>FocalScope is a modernized, Chinese-localized build based on ImageJ1.</description>
