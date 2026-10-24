@@ -1,5 +1,6 @@
 package ij.io;
 import ij.gui.GenericDialog;
+import ij.gui.UITheme;
 import java.awt.*;
 import java.io.*;
 import javax.swing.*;
@@ -95,7 +96,7 @@ public class SaveDialog {
 	// Save using JFileChooser.
 	void jSave(String title, String defaultDir, String defaultName) {
 		LookAndFeel saveLookAndFeel = Java2.getLookAndFeel();
-		Java2.setSystemLookAndFeel();
+		UITheme.setFileChooserLookAndFeel();
 		if (EventQueue.isDispatchThread())
 			jSaveDispatchThread(title, defaultDir, defaultName);
 		else
@@ -107,6 +108,7 @@ public class SaveDialog {
 	// assumes we are running on the event dispatch thread
 	void jSaveDispatchThread(String title, String defaultDir, String defaultName) {
 		JFileChooser fc = new JFileChooser();
+		UITheme.styleFileChooser(fc, title, true);
 		fc.setDialogTitle(title);
 		fc.setDragEnabled(true);
 		fc.setTransferHandler(new DragAndDropHandler(fc));
@@ -148,6 +150,7 @@ public class SaveDialog {
 			EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
 					JFileChooser fc = new JFileChooser();
+					UITheme.styleFileChooser(fc, title, true);
 					fc.setDialogTitle(title);
 					fc.setDragEnabled(true);
 					fc.setTransferHandler(new DragAndDropHandler(fc));

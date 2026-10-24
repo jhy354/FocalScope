@@ -1,7 +1,13 @@
 package ij.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+
+import javax.swing.JFileChooser;
+import javax.swing.UIManager;
+
+import ij.I18n;
 
 /** Shared colors and fonts for the ImageX application shell. */
 public final class UITheme {
@@ -23,5 +29,31 @@ public final class UITheme {
 		String os = System.getProperty("os.name", "").toLowerCase();
 		String name = os.indexOf("windows")>=0 ? "Microsoft YaHei UI" : "SansSerif";
 		return new Font(name, style, size);
+	}
+
+	public static void setFileChooserLookAndFeel() {
+		try {
+			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		} catch (Exception e) {
+			// Keep the platform look and feel if Nimbus is unavailable.
+		}
+	}
+
+	public static void styleFileChooser(JFileChooser chooser, String title, boolean save) {
+		if (chooser==null) return;
+		UIManager.put("FileChooser.openButtonText", "打开");
+		UIManager.put("FileChooser.saveButtonText", "保存");
+		UIManager.put("FileChooser.cancelButtonText", I18n.label("Cancel"));
+		UIManager.put("FileChooser.fileNameLabelText", "文件名");
+		UIManager.put("FileChooser.filesOfTypeLabelText", "文件类型");
+		UIManager.put("FileChooser.lookInLabelText", "位置");
+		chooser.setDialogTitle(I18n.label(title));
+		chooser.setFont(font(Font.PLAIN, 13));
+		chooser.setBackground(CARD);
+		chooser.setForeground(TEXT);
+		chooser.setPreferredSize(new Dimension(860, 560));
+		chooser.setControlButtonsAreShown(true);
+		chooser.setAcceptAllFileFilterUsed(true);
+		chooser.setApproveButtonText(save?"保存":"打开");
 	}
 }

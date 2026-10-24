@@ -93,7 +93,7 @@ public class OpenDialog {
 	// Uses JFileChooser to display file open dialog box.
 	void jOpen(String title, String path, String fileName) {
 		LookAndFeel saveLookAndFeel = Java2.getLookAndFeel();
-		Java2.setSystemLookAndFeel();
+		UITheme.setFileChooserLookAndFeel();
 		if (EventQueue.isDispatchThread())
 			jOpenDispatchThread(title, path, fileName);
 		else
@@ -105,6 +105,7 @@ public class OpenDialog {
 	// Assumes we are running on the event dispatch thread
 	void jOpenDispatchThread(String title, String path, final String fileName) {
 		JFileChooser fc = new JFileChooser();
+		UITheme.styleFileChooser(fc, title, false);
 		fc.setDialogTitle(title);
 		fc.setDragEnabled(true);
 		fc.setTransferHandler(new DragAndDropHandler(fc));
@@ -132,6 +133,7 @@ public class OpenDialog {
 			EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
 				JFileChooser fc = new JFileChooser();
+				UITheme.styleFileChooser(fc, title, false);
 				fc.setDialogTitle(title);
 				fc.setDragEnabled(true);
 				fc.setTransferHandler(new DragAndDropHandler(fc));

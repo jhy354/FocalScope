@@ -159,6 +159,8 @@ public class ImageJ extends Frame implements ActionListener,
 		embedded = applet==null && (mode==EMBEDDED||mode==NO_SHOW);
 		this.applet = applet;
 		String err1 = Prefs.load(this, applet);
+		if (IJ.isWindows())
+			Prefs.useJFileChooser = true;
 		setBackground(backgroundColor);
 		Menus m = new Menus(this, applet);
 		String err2 = m.addMenuBar();

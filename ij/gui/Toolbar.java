@@ -118,12 +118,12 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 	private static int gapSize;
 	private static int offset;
 	
-	private Color gray = new Color(228,228,228);
-	private Color brighter = gray.brighter();
-	private Color darker = new Color(180, 180, 180);
-	private Color evenDarker = new Color(110, 110, 110);
-	private Color triangleColor = new Color(150, 0, 0);
-	private Color toolColor = new Color(0, 25, 45);
+	private Color gray = UITheme.CARD;
+	private Color brighter = Color.WHITE;
+	private Color darker = UITheme.BORDER;
+	private Color evenDarker = new Color(160, 168, 178);
+	private Color triangleColor = UITheme.ACCENT;
+	private Color toolColor = new Color(40, 45, 52);
 	
 	/** Obsolete public constants */
 	public static final int SPARE1=UNUSED, SPARE2=CUSTOM1, SPARE3=CUSTOM2, SPARE4=CUSTOM3, 
@@ -310,17 +310,12 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 
 	private void fill3DRect(Graphics g, int x, int y, int width, int height, boolean raised) {
 		if (null==g) return;
-		if (raised)
-			g.setColor(gray);
-		else
-			g.setColor(darker);
-		g.fillRect(x+1, y+1, width-2, height-2);
-		g.setColor(raised ? brighter : evenDarker);
-		g.drawLine(x, y, x, y + height - 1);
-		g.drawLine(x + 1, y, x + width - 2, y);
-		g.setColor(raised ? evenDarker : brighter);
-		g.drawLine(x + 1, y + height - 1, x + width - 1, y + height - 1);
-		g.drawLine(x + width - 1, y, x + width - 1, y + height - 2);
+		Graphics2D g2 = (Graphics2D)g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setColor(raised ? UITheme.CARD : new Color(226, 238, 255));
+		g2.fillRoundRect(x+1, y+1, width-2, height-2, 7, 7);
+		g2.setColor(raised ? UITheme.BORDER : UITheme.ACCENT);
+		g2.drawRoundRect(x+1, y+1, width-2, height-2, 7, 7);
 	}    
 
 	private void drawButton(Graphics g, int tool) {

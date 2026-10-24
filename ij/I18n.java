@@ -47,6 +47,8 @@ public final class I18n {
 	 */
 	public static String label(final String text) {
 		if (text == null || text.length() == 0) return text;
+		if (text.length()==1 && !Character.isLetterOrDigit(text.charAt(0)))
+			return text;
 		String translated = LABELS.getProperty(text);
 		String key = text.trim();
 		if (translated == null) translated = LABELS.getProperty(key);
