@@ -39,7 +39,7 @@ public class ImageInfo implements PlugIn {
 			s += IJ.getInstance().getInfo()+"\n \n";
 		s += "No images are open\n";
 		Dimension screen = IJ.getScreenSize();
-		s += "ImageX home: "+IJ.getDir("imagej")+"\n";
+		s += "FocalScope home: "+IJ.getDir("imagej")+"\n";
 		s += "Java home: "+System.getProperty("java.home")+"\n";
 		s += "Java version: "+IJ.javaVersion()+"\n";
 		s += "Screen size: "+screen.width+"x"+screen.height+"\n";

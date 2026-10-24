@@ -34,7 +34,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ij.I18n;
 
-/** Shared colors and fonts for the ImageX application shell. */
+/** Shared colors and fonts for the FocalScope application shell. */
 public final class UITheme {
 
 	private static final String[] SUPPORTED_IMAGE_EXTENSIONS = {

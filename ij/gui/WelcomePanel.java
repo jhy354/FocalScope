@@ -48,7 +48,7 @@ public class WelcomePanel extends Canvas {
 
 	private Image loadLogo() {
 		try {
-			java.net.URL url = WelcomePanel.class.getResource("/ImageX.png");
+			java.net.URL url = WelcomePanel.class.getResource("/FocalScope.png");
 			return url != null ? Toolkit.getDefaultToolkit().getImage(url) : null;
 		} catch (Exception e) {
 			return null;
@@ -72,7 +72,7 @@ public class WelcomePanel extends Canvas {
 
 		g.setColor(UITheme.TEXT);
 		g.setFont(UITheme.font(Font.BOLD, 34));
-		drawCentered(g, "ImageX", centerX, logoY + logoSize + 52);
+		drawCentered(g, "FocalScope", centerX, logoY + logoSize + 52);
 
 		int bw = 150;
 		int bh = 40;
@@ -88,7 +88,7 @@ public class WelcomePanel extends Canvas {
 		g.setColor(UITheme.MUTED);
 		g.setFont(UITheme.font(Font.PLAIN, 12));
 		drawCentered(g, "将图像拖放到此窗口，或点击“打开图像”", centerX, by + 72);
-		drawCentered(g, "ImageX " + ImageJ.VERSION, centerX, h - 24);
+		drawCentered(g, "FocalScope " + ImageJ.VERSION, centerX, h - 24);
 	}
 
 	private void drawCentered(Graphics g, String text, int centerX, int baseline) {

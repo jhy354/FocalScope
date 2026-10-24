@@ -8,8 +8,8 @@ import java.util.*;
 import java.lang.reflect.*;
 
 
-/** This plugin implements the Help/Refresh ImageX menus command. */
-public class ImageX_Updater implements PlugIn {
+/** This plugin implements the Help/Refresh FocalScope menus command. */
+public class FocalScope_Updater implements PlugIn {
 	private static final String URL = "http://wsr.imagej.net";
 	private String notes;
 
@@ -38,7 +38,7 @@ public class ImageX_Updater implements PlugIn {
 			String path = file.getPath();
 			String msg = "No write access: "+path;
 			if (IJ.isMacOSX() && path!=null && path.startsWith("/private/var/folders/")) {
-				msg = "ImageX is in a read-only folder due to Path Randomization.\n"
+				msg = "FocalScope is in a read-only folder due to Path Randomization.\n"
 				+ "To work around this problem, drag ImageJ.app to another\n"
 				+ "folder and then (optionally) drag it back.";
 			}
@@ -83,14 +83,14 @@ public class ImageX_Updater implements PlugIn {
 	}
 
 	int showDialog(String[] versions) {
-		GenericDialog gd = new GenericDialog("ImageX Updater");
+		GenericDialog gd = new GenericDialog("FocalScope Updater");
 		gd.addChoice("Upgrade To:", versions, versions[0]);
 		String msg = 
 			"You are currently running v"+ImageJ.VERSION+ImageJ.BUILD+".\n"+
 			" \n"+
-			"If you click \"OK\", ImageX will quit\n"+
+			"If you click \"OK\", FocalScope will quit\n"+
 			"and you will be running the upgraded\n"+
-			"version after you restart ImageX.\n";
+			"version after you restart FocalScope.\n";
 		gd.addMessage(msg);
 		gd.showDialog();
 		if (gd.wasCanceled())
@@ -177,7 +177,7 @@ public class ImageX_Updater implements PlugIn {
 	}
 
 	void error(String msg) {
-		IJ.error("ImageX Updater", msg);
+		IJ.error("FocalScope Updater", msg);
 	}
 	
 	void updateMenus() {

@@ -124,7 +124,7 @@ public class Menus {
 		addPlugInItem(showFolderMenu, "Plugins", "ij.plugin.SimpleCommands(\"showdirPlugins\")", 0, false);
 		addPlugInItem(showFolderMenu, "Macros", "ij.plugin.SimpleCommands(\"showdirMacros\")", 0, false);
 		addPlugInItem(showFolderMenu, "LUTs", "ij.plugin.SimpleCommands(\"showdirLuts\")", 0, false);
-		addPlugInItem(showFolderMenu, "ImageX", "ij.plugin.SimpleCommands(\"showdirImageJ\")", 0, false);
+		addPlugInItem(showFolderMenu, "FocalScope", "ij.plugin.SimpleCommands(\"showdirImageJ\")", 0, false);
 		addPlugInItem(showFolderMenu, "temp", "ij.plugin.SimpleCommands(\"showdirTemp\")", 0, false);
 		addPlugInItem(showFolderMenu, "Home", "ij.plugin.SimpleCommands(\"showdirHome\")", 0, false);
 		file.addSeparator();
@@ -188,10 +188,10 @@ public class Menus {
 		if (zoomMenu!=null) {
 			zoomMenu.addSeparator();
 			CheckboxMenuItem wheelZoom = addCheckboxItem(zoomMenu, "Wheel Zoom",
-				"ij.plugin.ImageXViewOptions(\"wheel\")");
+				"ij.plugin.FocalScopeViewOptions(\"wheel\")");
 			wheelZoom.setState(ImageCanvas.wheelZoomEnabled);
 			CheckboxMenuItem middlePan = addCheckboxItem(zoomMenu, "Middle-Button Pan",
-				"ij.plugin.ImageXViewOptions(\"pan\")");
+				"ij.plugin.FocalScopeViewOptions(\"pan\")");
 			middlePan.setState(ImageCanvas.middlePanEnabled);
 		}
 		getMenu("Image>Overlay", true);
@@ -250,7 +250,7 @@ public class Menus {
 		window.addSeparator();
 
 		Menu help = getMenu("Help");
-		addPlugInItem(help, "ImageX Website...", "ij.plugin.BrowserLauncher", 0, false);
+		addPlugInItem(help, "FocalScope Website...", "ij.plugin.BrowserLauncher", 0, false);
 		help.addSeparator();
 		addPlugInItem(help, "Dev. Resources...", "ij.plugin.BrowserLauncher(\""+IJ.URL2+"\")", 0, false);
 		addPlugInItem(help, "Macro Functions...", "ij.plugin.BrowserLauncher(\""+IJ.URL2+"\")", 0, false);
@@ -258,12 +258,12 @@ public class Menus {
 		addPlugInItem(examplesMenu, "Open as Panel", "ij.plugin.SimpleCommands(\"opencp\")", 0, false);
 		help.add(examplesMenu);
 		help.addSeparator();
-		addPlugInItem(help, "ImageX Releases...", "ij.plugin.BrowserLauncher(\"https://github.com/jhy354/ImageX/releases\")", 0, false);
-		addPlugInItem(help, "Release Notes...", "ij.plugin.BrowserLauncher(\"https://github.com/jhy354/ImageX/releases\")", 0, false);
-		addPlugInItem(help, "Refresh Menus", "ij.plugin.ImageX_Updater(\"menus\")", 0, false);
+		addPlugInItem(help, "FocalScope Releases...", "ij.plugin.BrowserLauncher(\"https://github.com/jhy354/FocalScope/releases\")", 0, false);
+		addPlugInItem(help, "Release Notes...", "ij.plugin.BrowserLauncher(\"https://github.com/jhy354/FocalScope/releases\")", 0, false);
+		addPlugInItem(help, "Refresh Menus", "ij.plugin.FocalScope_Updater(\"menus\")", 0, false);
 		help.addSeparator();
 		Menu aboutMenu = getMenu("Help>About Plugins", true);
-		addPlugInItem(help, "About ImageX...", "ij.plugin.AboutBox", 0, false);
+		addPlugInItem(help, "About FocalScope...", "ij.plugin.AboutBox", 0, false);
 				
 		if (applet==null) {
 			menuSeparators = new Properties();
@@ -1044,7 +1044,7 @@ public class Menus {
 			else if (ijDir.equals("user.home")) {
 				ijDir = System.getProperty("user.home");
 				if (!(new File(ijDir+File.separator+"plugins")).isDirectory()) 
-					ijDir = ijDir + File.separator + "ImageX";
+					ijDir = ijDir + File.separator + "FocalScope";
 				// needed to run plugins when ImageJ launched using Java WebStart
 				if (applet==null)
 					System.setSecurityManager(null);

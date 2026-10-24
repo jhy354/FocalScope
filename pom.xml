@@ -10,21 +10,21 @@
 	</parent>
 
 	<groupId>com.github.jhy354</groupId>
-	<artifactId>imagex</artifactId>
+	<artifactId>focalscope</artifactId>
 	<version>2.0.5</version>
 
-	<name>ImageX</name>
-	<description>ImageX is a modernized, Chinese-localized build based on ImageJ1.</description>
-	<url>https://github.com/jhy354/ImageX</url>
+	<name>FocalScope</name>
+	<description>FocalScope is a modernized, Chinese-localized build based on ImageJ1.</description>
+	<url>https://github.com/jhy354/FocalScope</url>
 	<inceptionYear>1997</inceptionYear>
 	<organization>
-		<name>ImageX</name>
-		<url>https://github.com/jhy354/ImageX</url>
+		<name>FocalScope</name>
+		<url>https://github.com/jhy354/FocalScope</url>
 	</organization>
 	<licenses>
 		<license>
 			<name>Public domain</name>
-			<url>https://github.com/jhy354/ImageX/blob/main/LICENSE.txt</url>
+			<url>https://github.com/jhy354/FocalScope/blob/main/LICENSE.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -33,7 +33,7 @@
 		<developer>
 			<id>rasband</id>
 			<name>Wayne Rasband</name>
-			<url>https://github.com/jhy354/ImageX</url>
+			<url>https://github.com/jhy354/FocalScope</url>
 			<roles>
 				<role>founder</role>
 				<role>lead</role>
@@ -51,24 +51,24 @@
 
 	<mailingLists>
 		<mailingList>
-			<name>ImageX Issues</name>
-			<archive>https://github.com/jhy354/ImageX/issues</archive>
+			<name>FocalScope Issues</name>
+			<archive>https://github.com/jhy354/FocalScope/issues</archive>
 		</mailingList>
 	</mailingLists>
 
 	<scm>
-		<connection>scm:git:https://github.com/jhy354/ImageX</connection>
-		<developerConnection>scm:git:git@github.com:jhy354/ImageX.git</developerConnection>
+		<connection>scm:git:https://github.com/jhy354/FocalScope</connection>
+		<developerConnection>scm:git:git@github.com:jhy354/FocalScope.git</developerConnection>
 		<tag>HEAD</tag>
-		<url>https://github.com/jhy354/ImageX</url>
+		<url>https://github.com/jhy354/FocalScope</url>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/jhy354/ImageX/issues</url>
+		<url>https://github.com/jhy354/FocalScope/issues</url>
 	</issueManagement>
 	<ciManagement>
 		<system>GitHub Actions</system>
-		<url>https://github.com/jhy354/ImageX/actions</url>
+		<url>https://github.com/jhy354/FocalScope/actions</url>
 	</ciManagement>
 
 	<properties>
@@ -195,7 +195,7 @@
 					-->
 					<source>9</source>
 					<links>
-						<link>https://github.com/jhy354/ImageX</link>
+						<link>https://github.com/jhy354/FocalScope</link>
 					</links>
 					<sourceFileIncludes>ij/**/*.java</sourceFileIncludes>
 				</configuration>

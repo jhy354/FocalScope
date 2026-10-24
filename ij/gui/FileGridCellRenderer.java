@@ -18,7 +18,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
 /**
- * Fixed-size icon-grid cell used by the ImageX file chooser. Every cell has the
+ * Fixed-size icon-grid cell used by the FocalScope file chooser. Every cell has the
  * same bounds and inner card, so icons, labels, hover backgrounds and shadows
  * line up regardless of filename length.
  */

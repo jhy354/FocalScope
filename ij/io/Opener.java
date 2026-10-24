@@ -702,7 +702,7 @@ ImagePlus openJpegOrGifUsingURL(String title, URL url) {
 			try {
 				imp = new ImagePlus(name, img);
 			} catch (Exception e) {
-				IJ.error("Opener", e.getMessage()+"\n(Note: ImageX cannot open CMYK JPEGs)\n \n"+dir+name);
+				IJ.error("Opener", e.getMessage()+"\n(Note: FocalScope cannot open CMYK JPEGs)\n \n"+dir+name);
 				return null; // error loading image
 			}				
 			if (imp.getType()==ImagePlus.COLOR_RGB)

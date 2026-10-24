@@ -89,7 +89,7 @@ public class NextImageOpener implements PlugIn {
 				msg = "Save changes to\n" + "\"" + name + "\"?";
 			else
 				msg = "Save changes to \"" + name + "\"?";
-			YesNoCancelDialog d = new YesNoCancelDialog(imp0.getWindow(), "ImageX", msg);
+			YesNoCancelDialog d = new YesNoCancelDialog(imp0.getWindow(), "FocalScope", msg);
 			if (d.cancelPressed())
 				return "Canceled";
 			else if (d.yesPressed()) {

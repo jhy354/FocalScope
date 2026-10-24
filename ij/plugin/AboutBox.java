@@ -7,7 +7,7 @@ import ij.io.*;
 import java.net.URL;
 import java.awt.image.*;
 
-	/** This plugin implements the Help/About ImageX command. */
+	/** This plugin implements the Help/About FocalScope command. */
 	public class AboutBox implements PlugIn {
 		private static final int SMALL_FONT=20, LARGE_FONT=45;
 		private static final Color TEXT_COLOR = new Color(255,255,255);
@@ -16,18 +16,18 @@ import java.awt.image.*;
 		System.gc();
 		int lines = 7;
 		String[] text = new String[lines];
-		text[0] = "ImageX "+ImageJ.VERSION+ImageJ.BUILD;
-		text[1] = "ImageX contributors";
+		text[0] = "FocalScope "+ImageJ.VERSION+ImageJ.BUILD;
+		text[1] = "FocalScope contributors";
 		text[2] = "Open-source image analysis";
-		text[3] = "https://github.com/jhy354/ImageX";
+		text[3] = "https://github.com/jhy354/FocalScope";
 		text[4] = "Java "+System.getProperty("java.version")+(IJ.is64Bit()?" (64-bit)":" (32-bit)");
 		text[5] = IJ.freeMemory();
-		text[6] = "ImageX is in the public domain";
+		text[6] = "FocalScope is in the public domain";
 		ImageProcessor ip = null;
 		ImageJ ij = IJ.getInstance();
 		if (ij==null)
 			return;
-		URL url = ij.getClass().getResource("/ImageX.png");
+		URL url = ij.getClass().getResource("/FocalScope.png");
 		if (url!=null) {
 			Image img = null;
 			try {img = ij.createImage((ImageProducer)url.getContent());}
@@ -41,7 +41,7 @@ import java.awt.image.*;
 			ip =  new ColorProcessor(55,45);
 		int scale = ip.getWidth()<300?3:6;
 		ip = ip.resize(ip.getWidth()*scale, ip.getHeight()*scale);
-		ImagePlus imp = new ImagePlus("About ImageX", ip);
+		ImagePlus imp = new ImagePlus("About FocalScope", ip);
 		int width = imp.getWidth();
 		Overlay overlay = new Overlay();
 		Font font = new Font("SansSerif", Font.PLAIN, LARGE_FONT);

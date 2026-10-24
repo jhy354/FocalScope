@@ -35,7 +35,7 @@ public final class FileThumbnailLoader {
 	private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2,
 		new ThreadFactory() {
 			public Thread newThread(Runnable runnable) {
-				Thread thread = new Thread(runnable, "ImageX thumbnail loader");
+				Thread thread = new Thread(runnable, "FocalScope thumbnail loader");
 				thread.setDaemon(true);
 				thread.setPriority(Thread.MIN_PRIORITY);
 				return thread;

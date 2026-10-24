@@ -683,7 +683,7 @@ public class Prefs {
 	public static void savePrefs(Properties prefs, String path) throws IOException{
 		FileOutputStream fos = new FileOutputStream(path);
 		BufferedOutputStream bos = new BufferedOutputStream(fos);
-		prefs.store(bos, "ImageX "+ImageJ.VERSION+" Preferences");
+		prefs.store(bos, "FocalScope "+ImageJ.VERSION+" Preferences");
 		bos.close();
 	}
 	

@@ -39,7 +39,7 @@ public class OpenDialog {
 	}
 
 	/** Displays a file open dialog. If 'imageOnly' is true, the
-		dialog only lists image formats that ImageX can open. */
+		dialog only lists image formats that FocalScope can open. */
 	public OpenDialog(String title, String path, boolean imageOnly) {
 		this.imageOnly = imageOnly;
 		String macroOptions = Macro.getOptions();

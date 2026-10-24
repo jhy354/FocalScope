@@ -1,9 +1,9 @@
-<!-- Ant makefile for ImageX -->
+<!-- Ant makefile for FocalScope -->
 
-<project name="ImageX" default="run">
+<project name="FocalScope" default="run">
 
   <property name="build.dir" value="build" />
-  <property name="jarfile" value="ImageX.jar" />
+  <property name="jarfile" value="FocalScope.jar" />
   <property name="javadoc.dir" value="../api" />
   <property name="repository" value="https://maven.scijava.org/content/groups/public" />
   <property name="src-tests.dir" value="tests" />
@@ -19,18 +19,18 @@
   </target>
 
 
-  <target name="build" depends="compile" description="Build ImageX.jar.">
+  <target name="build" depends="compile" description="Build FocalScope.jar.">
     <!-- Copy needed files into the build directory. -->
     <copy file="IJ_Props.txt" todir="${build.dir}" />
     <copy file="IJ_zh_CN.properties" todir="${build.dir}" />
-    <copy file="images/ImageX.png" todir="${build.dir}" />
-    <copy file="images/ImageX.ico" todir="${build.dir}" />
+    <copy file="images/FocalScope.png" todir="${build.dir}" />
+    <copy file="images/FocalScope.ico" todir="${build.dir}" />
     <copy file="images/microscope.gif" tofile="${build.dir}/microscope.gif" />
     <copy file="images/about.jpg" tofile="${build.dir}/about.jpg" />
     <copy file="plugins/MacAdapter.class" tofile="${build.dir}/ij/plugin/MacAdapter.class" />
     <copy file="plugins/MacAdapter9.class" tofile="${build.dir}/ij/plugin/MacAdapter9.class" />
     <copy todir="${build.dir}/macros"><fileset dir="macros"/></copy>
-    <!-- Build ImageX.jar. -->
+    <!-- Build FocalScope.jar. -->
     <jar jarfile="${jarfile}" basedir="${build.dir}"
          manifest="MANIFEST.MF"
          excludes="${src-tests.dir}" />
@@ -43,14 +43,14 @@
   </target>
 
 
-  <target name="run" depends="build" description="Build and run ImageX.">
+  <target name="run" depends="build" description="Build and run FocalScope.">
     <copy file="${jarfile}" toDir=".." />
     <java maxmemory="640m" jar="${jarfile}" fork="yes" />
   </target>
 
 
-  <target name="run2" depends="build" description="Build and run ImageX.">
-    <!-- Run in ImageX directory -->
+  <target name="run2" depends="build" description="Build and run FocalScope.">
+    <!-- Run in FocalScope directory -->
     <copy file="${jarfile}" toDir=".." />
     <java maxmemory="640m" dir=".." jar="${jarfile}" fork="yes" />
   </target>
@@ -76,7 +76,7 @@
            author="true"
            version="true"
            use="true"
-           windowtitle="ImageX API">
+           windowtitle="FocalScope API">
     </javadoc>
   </target>
 

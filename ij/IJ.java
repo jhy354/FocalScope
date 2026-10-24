@@ -42,10 +42,10 @@ public class IJ {
 	public static final int COMPOSITE=1, COLOR=2, GRAYSCALE=3;
 	
 	/** @deprecated */
-	public static final String URL = "https://github.com/jhy354/ImageX";
+	public static final String URL = "https://github.com/jhy354/FocalScope";
 	
-	/** ImageX website */
-	public static final String URL2 = "https://github.com/jhy354/ImageX";
+	/** FocalScope website */
+	public static final String URL2 = "https://github.com/jhy354/FocalScope";
 
 	public static final int ALL_KEYS = -1;
 	
@@ -471,7 +471,7 @@ public class IJ {
 	
 	/**Displays a message in the status bar and flashes
 	 * either the status bar or the active image.<br>
-	 * See: https://github.com/jhy354/ImageX
+	 * See: https://github.com/jhy354/FocalScope
 	*/ 
 	public static void showStatus(String message, String options) {
 		showStatus(message);
@@ -534,7 +534,7 @@ public class IJ {
 	* @deprecated
 	* replaced by IJ.log(), ResultsTable.setResult() and TextWindow.append().
 	* There are examples at
-	*   https://github.com/jhy354/ImageX
+	*   https://github.com/jhy354/FocalScope
 	*/
 	public static void write(String s) {
 		if (textPanel==null && ij!=null)
@@ -799,7 +799,7 @@ public class IJ {
 	/** Displays a message in a dialog box with the specified title.
 		Displays HTML formatted text if 'msg' starts with "<html>".
 		There are examples at
-		"https://github.com/jhy354/ImageX".
+		"https://github.com/jhy354/FocalScope".
 		Writes to the Java console if ImageJ is not present. */
 	public static void showMessage(String title, String msg) {
 		if (ij!=null) {
@@ -839,7 +839,7 @@ public class IJ {
 		}
 		if (msg!=null && msg.endsWith(Macro.MACRO_CANCELED))
 			return;
-		String title2 = title!=null?title:"ImageX";
+		String title2 = title!=null?title:"FocalScope";
 		boolean abortMacro = title!=null;
 		lastErrorMessage = msg;
 		if (redirectErrorMessages) {
@@ -1238,7 +1238,7 @@ public class IJ {
 	public static boolean versionLessThan(String version) {
 		boolean lessThan = ImageJ.VERSION.compareTo(version)<0;
 		if (lessThan)
-			error("This plugin or macro requires ImageX "+version+" or later. See the ImageX releases page for updates.");
+			error("This plugin or macro requires FocalScope "+version+" or later. See the FocalScope releases page for updates.");
 		return lessThan;
 	}
 	
@@ -1612,7 +1612,7 @@ public class IJ {
 
 	/** Activates the window with the specified title. */
 	public static void selectWindow(String title) {
-		if ((title.equals("ImageX")||title.equals("ImageJ"))&&ij!=null) {
+		if ((title.equals("FocalScope")||title.equals("ImageJ"))&&ij!=null) {
 			ij.toFront();
 			return;
 		}

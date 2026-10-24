@@ -42,7 +42,7 @@ Rolling ball code based on the NIH Image Pascal version by Michael Castle and Ja
 Keller of the University of Michigan Mental Health Research Institute.
 Sliding Paraboloid by Michael Schmid, 2007.
 
-Version 12-Apr-2026, fixes sliding paraboloid bugs with imagex containing NaNs,
+Version 12-Apr-2026, fixes sliding paraboloid bugs with images containing NaNs,
 uses nonblocking dialog.
 */
 public class BackgroundSubtracter implements ExtendedPlugInFilter, DialogListener {

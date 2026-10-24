@@ -457,7 +457,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 			if (imp.isLocked())
 				msg += "\nWARNING: This image is locked.\nProbably, processing is unfinished (slow or still previewing).";
 			toFront();
-			YesNoCancelDialog d = new YesNoCancelDialog(this, "ImageX", msg);
+			YesNoCancelDialog d = new YesNoCancelDialog(this, "FocalScope", msg);
 			if (d.cancelPressed())
 				return false;
 			else if (d.yesPressed()) {
@@ -554,7 +554,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		}).start();
 	}
 
-	private void installImageXChrome() {
+	private void installFocalScopeChrome() {
 		if (this instanceof PlotWindow || this instanceof HistogramWindow)
 			return;
 		ImageJ main = IJ.getInstance();
@@ -577,7 +577,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 			main.setVisible(false);
 	}
 
-	private void restoreImageXChrome() {
+	private void restoreFocalScopeChrome() {
 		if (this instanceof PlotWindow || this instanceof HistogramWindow)
 			return;
 		ImageJ main = IJ.getInstance();
@@ -620,7 +620,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 
 	@Override
 	public void dispose() {
-		restoreImageXChrome();
+		restoreFocalScopeChrome();
 		super.dispose();
 	}
 	
@@ -722,7 +722,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	public void windowActivated(WindowEvent e) {
 		if (IJ.debugMode) IJ.log("windowActivated: "+imp.getTitle());
 		if (!IJ.isMacro())
-			installImageXChrome();
+			installFocalScopeChrome();
 		if (imp==null)
 			return;
 		ImageJ ij = IJ.getInstance();

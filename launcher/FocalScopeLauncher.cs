@@ -4,25 +4,25 @@ using System.IO;
 using System.Management;
 using System.Windows.Forms;
 
-internal static class ImageXLauncher
+internal static class FocalScopeLauncher
 {
     [STAThread]
     private static void Main(string[] args)
     {
         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
         string java = Path.Combine(baseDir, @"runtime\bin\javaw.exe");
-        string jar = Path.Combine(baseDir, "ImageX.jar");
+        string jar = Path.Combine(baseDir, "FocalScope.jar");
 
         if (!File.Exists(java))
         {
             MessageBox.Show("Bundled Java runtime not found:\n" + java,
-                "ImageX", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                "FocalScope", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
         if (!File.Exists(jar))
         {
-            MessageBox.Show("ImageX.jar not found:\n" + jar,
-                "ImageX", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("FocalScope.jar not found:\n" + jar,
+                "FocalScope", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
 
@@ -32,11 +32,11 @@ internal static class ImageXLauncher
             arguments += " \"" + arg.Replace("\"", "\\\"") + "\"";
         }
 
-        // ImageX keeps an RMI stub in %TEMP%. A stale stub (left behind by a
+        // FocalScope keeps an RMI stub in %TEMP%. A stale stub (left behind by a
         // forced shutdown) makes the next launch wait for the RMI connect
         // timeout, which can take about five seconds. Remove it only when no
-        // ImageX window is running; otherwise the existing instance is used.
-        if (!IsImageXRunning())
+        // FocalScope window is running; otherwise the existing instance is used.
+        if (!IsFocalScopeRunning())
         {
             try
             {
@@ -66,18 +66,18 @@ internal static class ImageXLauncher
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Could not start ImageX:\n" + ex.Message,
-                "ImageX", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("Could not start FocalScope:\n" + ex.Message,
+                "FocalScope", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
     private static string GetStubPath()
     {
         return Path.Combine(Path.GetTempPath(),
-            "ImageX-" + Environment.UserName + "-57294.stub");
+            "FocalScope-" + Environment.UserName + "-57294.stub");
     }
 
-    private static bool IsImageXRunning()
+    private static bool IsFocalScopeRunning()
     {
         string[] names = { "javaw.exe", "java.exe" };
         foreach (string name in names)
@@ -91,8 +91,8 @@ internal static class ImageXLauncher
                     {
                         string commandLine = process["CommandLine"] as string;
                         if (commandLine != null &&
-                            (commandLine.IndexOf("ImageX.jar", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                             commandLine.IndexOf("imagex-", StringComparison.OrdinalIgnoreCase) >= 0))
+                            (commandLine.IndexOf("FocalScope.jar", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                             commandLine.IndexOf("focalscope-", StringComparison.OrdinalIgnoreCase) >= 0))
                         {
                             return true;
                         }
@@ -112,7 +112,7 @@ internal static class ImageXLauncher
                 {
                     try
                     {
-                        if (p.MainWindowTitle == "ImageX") return true;
+                        if (p.MainWindowTitle == "FocalScope") return true;
                     }
                     catch (Exception)
                     {
