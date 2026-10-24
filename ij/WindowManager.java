@@ -536,6 +536,15 @@ public class WindowManager {
 			if (title.equals(winTitle))
 				return (Window)win;
 		}
+		String translated = I18n.label(title);
+		if (translated!=null && !translated.equals(title)) {
+			for (int i=0; i<nonImageList.size(); i++) {
+				Object win = nonImageList.get(i);
+				String winTitle = win instanceof Frame?((Frame)win).getTitle():((Dialog)win).getTitle();
+				if (translated.equals(winTitle))
+					return (Window)win;
+			}
+		}
 		return getImageWindow(title);
     }
 
