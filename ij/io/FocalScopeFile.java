@@ -190,6 +190,7 @@ public final class FocalScopeFile {
 				RoiManager rm = RoiManager.getInstance();
 				if (rm==null)
 					rm = RoiManager.getRoiManager();
+				rm.reset();
 				for (int i=0; i<managerCount; i++) {
 					Roi roi = readRoi(zip, "roi-manager/"+pad(i)+".roi");
 					if (roi!=null)
