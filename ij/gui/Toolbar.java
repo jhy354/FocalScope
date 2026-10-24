@@ -1358,13 +1358,13 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 		Menu pluginsMenu = null;
 		if (menuBar.getMenuCount()>=5)
 			pluginsMenu = menuBar.getMenu(5);
-		if (pluginsMenu==null || !"Plugins".equals(pluginsMenu.getLabel()))
+		if (pluginsMenu==null || !isMenuNamed(pluginsMenu, "Plugins"))
 			return;
 		n = pluginsMenu.getItemCount();
 		Menu toolsMenu = null;
 		for (int i=0; i<n; ++i) {
 			MenuItem m = pluginsMenu.getItem(i);
-			if ("Tools".equals(m.getLabel()) && (m instanceof Menu)) {
+			if (isMenuNamed(m, "Tools") && (m instanceof Menu)) {
 				toolsMenu = (Menu)m;
 				break;
 			}
@@ -1387,6 +1387,16 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 			}
 		}
 		switchPopup.addSeparator();
+	}
+
+	private boolean isMenuNamed(MenuItem item, String name) {
+		if (item==null) return false;
+		String label = item.getLabel();
+		String action = item.getActionCommand();
+		if (name.equals(label) || name.equals(action))
+			return true;
+		String translated = I18n.label(name);
+		return translated!=null && translated.equals(label);
 	}
 
     private void addBuiltInTool(String name) {
