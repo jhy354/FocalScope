@@ -3,15 +3,24 @@ package ij.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.io.File;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -95,6 +104,65 @@ public final class UITheme {
 		chooser.setApproveButtonText(save?"保存":"打开");
 		chooser.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		styleComponent(chooser);
+		configureFileList(chooser);
+	}
+
+	private static JList<?> findList(Container container) {
+		for (Component child : container.getComponents()) {
+			if (child instanceof JList)
+				return (JList<?>)child;
+			if (child instanceof Container) {
+				JList<?> list = findList((Container)child);
+				if (list!=null) return list;
+			}
+		}
+		return null;
+	}
+
+	private static void configureFileList(JFileChooser chooser) {
+		JList<?> list = findList(chooser);
+		if (list==null) return;
+		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		list.setVisibleRowCount(-1);
+		list.setFixedCellWidth(112);
+		list.setFixedCellHeight(94);
+		final FileSystemView view = FileSystemView.getFileSystemView();
+		list.setCellRenderer(new ListCellRenderer<Object>() {
+			public Component getListCellRendererComponent(JList<?> source, Object value,
+					int index, boolean selected, boolean focus) {
+				JLabel label = new JLabel();
+				label.setOpaque(true);
+				label.setHorizontalAlignment(JLabel.CENTER);
+				label.setVerticalAlignment(JLabel.CENTER);
+				label.setHorizontalTextPosition(JLabel.CENTER);
+				label.setVerticalTextPosition(JLabel.BOTTOM);
+				if (value instanceof File) {
+					File file = (File)value;
+					label.setText(file.getName());
+					Icon icon = view.getSystemIcon(file);
+					if (icon!=null)
+						label.setIcon(scaleIcon(icon, 40));
+				}
+				label.setBackground(selected?ACCENT:CARD);
+				label.setForeground(selected?Color.WHITE:TEXT);
+				label.setFont(font(Font.PLAIN, 12));
+				label.setBorder(BorderFactory.createEmptyBorder(8, 4, 5, 4));
+				return label;
+			}
+		});
+	}
+
+	private static Icon scaleIcon(Icon icon, int size) {
+		int width = icon.getIconWidth();
+		int height = icon.getIconHeight();
+		if (width<=0 || height<=0) return icon;
+		BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = image.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g.scale((double)size/width, (double)size/height);
+		icon.paintIcon(null, g, 0, 0);
+		g.dispose();
+		return new ImageIcon(image);
 	}
 
 	private static void styleComponent(Component component) {
