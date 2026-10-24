@@ -26,7 +26,7 @@ internal static class ImageXLauncher
             return;
         }
 
-        string arguments = "-Xmx1024m -jar \"" + jar + "\"";
+        string arguments = "-Xmx1024m -Dsun.java2d.dpiaware=true -jar \"" + jar + "\"";
         foreach (string arg in args)
         {
             arguments += " \"" + arg.Replace("\"", "\\\"") + "\"";

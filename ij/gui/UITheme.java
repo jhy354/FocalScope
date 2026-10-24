@@ -1,5 +1,6 @@
 package ij.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -10,6 +11,7 @@ import java.awt.Image;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Method;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
@@ -130,26 +132,39 @@ public final class UITheme {
 		list.setCellRenderer(new ListCellRenderer<Object>() {
 			public Component getListCellRendererComponent(JList<?> source, Object value,
 					int index, boolean selected, boolean focus) {
-				JLabel label = new JLabel();
-				label.setOpaque(true);
-				label.setHorizontalAlignment(JLabel.CENTER);
-				label.setVerticalAlignment(JLabel.CENTER);
-				label.setHorizontalTextPosition(JLabel.CENTER);
-				label.setVerticalTextPosition(JLabel.BOTTOM);
+				JPanel panel = new JPanel(new BorderLayout());
+				panel.setOpaque(true);
+				panel.setBackground(selected?ACCENT:CARD);
+				panel.setBorder(BorderFactory.createEmptyBorder(5, 3, 4, 3));
+				JLabel iconLabel = new JLabel();
+				iconLabel.setHorizontalAlignment(JLabel.CENTER);
+				iconLabel.setVerticalAlignment(JLabel.CENTER);
+				JLabel textLabel = new JLabel();
+				textLabel.setHorizontalAlignment(JLabel.CENTER);
+				textLabel.setFont(font(Font.PLAIN, 12));
+				textLabel.setForeground(selected?Color.WHITE:TEXT);
 				if (value instanceof File) {
 					File file = (File)value;
-					label.setText(file.getName());
-					Icon icon = view.getSystemIcon(file);
-					if (icon!=null)
-						label.setIcon(scaleIcon(icon, 40));
+					textLabel.setText(file.getName());
+					textLabel.setToolTipText(file.getName());
+					Icon icon = systemIcon(view, file, 40);
+					if (icon!=null) iconLabel.setIcon(icon);
 				}
-				label.setBackground(selected?ACCENT:CARD);
-				label.setForeground(selected?Color.WHITE:TEXT);
-				label.setFont(font(Font.PLAIN, 12));
-				label.setBorder(BorderFactory.createEmptyBorder(8, 4, 5, 4));
-				return label;
+				panel.add(iconLabel, BorderLayout.CENTER);
+				panel.add(textLabel, BorderLayout.SOUTH);
+				return panel;
 			}
 		});
+	}
+
+	private static Icon systemIcon(FileSystemView view, File file, int size) {
+		try {
+			Method method = FileSystemView.class.getMethod("getSystemIcon", File.class, int.class, int.class);
+			return (Icon)method.invoke(view, file, size, size);
+		} catch (Exception e) {
+			Icon icon = view.getSystemIcon(file);
+			return icon!=null ? scaleIcon(icon, size) : null;
+		}
 	}
 
 	private static Icon scaleIcon(Icon icon, int size) {
