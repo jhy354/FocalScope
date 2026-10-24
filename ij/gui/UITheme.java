@@ -10,7 +10,11 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.lang.reflect.Method;
 import java.awt.Font;
 
@@ -122,19 +126,19 @@ public final class UITheme {
 	}
 
 	private static void configureFileList(JFileChooser chooser) {
-		JList<?> list = findList(chooser);
+		final JList<?> list = findList(chooser);
 		if (list==null) return;
 		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		list.setVisibleRowCount(-1);
 		list.setFixedCellWidth(112);
 		list.setFixedCellHeight(94);
-		final FileSystemView view = FileSystemView.getFileSystemView();
+		final int[] hoverIndex = {-1};
 		list.setCellRenderer(new ListCellRenderer<Object>() {
 			public Component getListCellRendererComponent(JList<?> source, Object value,
 					int index, boolean selected, boolean focus) {
-				JPanel panel = new JPanel(new BorderLayout());
+				JPanel panel = new JPanel(new BorderLayout(0, 2));
 				panel.setOpaque(true);
-				panel.setBackground(selected?ACCENT:CARD);
+				panel.setBackground(selected?ACCENT:(index==hoverIndex[0]?new Color(232, 242, 255):CARD));
 				panel.setBorder(BorderFactory.createEmptyBorder(5, 3, 4, 3));
 				JLabel iconLabel = new JLabel();
 				iconLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -147,12 +151,28 @@ public final class UITheme {
 					File file = (File)value;
 					textLabel.setText(file.getName());
 					textLabel.setToolTipText(file.getName());
-					Icon icon = systemIcon(view, file, 40);
-					if (icon!=null) iconLabel.setIcon(icon);
+					iconLabel.setIcon(new FileTypeIcon(file));
 				}
 				panel.add(iconLabel, BorderLayout.CENTER);
 				panel.add(textLabel, BorderLayout.SOUTH);
 				return panel;
+			}
+		});
+		list.addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseMoved(MouseEvent event) {
+				int index = list.locationToIndex(event.getPoint());
+				Rectangle bounds = index>=0 ? list.getCellBounds(index, index) : null;
+				if (bounds==null || !bounds.contains(event.getPoint())) index = -1;
+				if (index!=hoverIndex[0]) {
+					hoverIndex[0] = index;
+					list.repaint();
+				}
+			}
+		});
+		list.addMouseListener(new MouseAdapter() {
+			public void mouseExited(MouseEvent event) {
+				hoverIndex[0] = -1;
+				list.repaint();
 			}
 		});
 	}
