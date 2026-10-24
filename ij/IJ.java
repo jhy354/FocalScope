@@ -2045,6 +2045,10 @@ public class IJ {
 		ImagePlus imp2 = imp;
 		if (imp2==null)
 			imp2 = WindowManager.getCurrentImage();
+		if (path!=null && path.toLowerCase(Locale.US).endsWith(FocalScopeFile.EXTENSION)) {
+			FocalScopeFile.save(imp2, path);
+			return;
+		}
 		int dotLoc = path.lastIndexOf('.');
 		if (dotLoc==-1 && imp2!=null) {
 			path = path + ".tif"; // save as TIFF if file name does not have an extension
@@ -2077,6 +2081,13 @@ public class IJ {
 		if (path!=null && path.length()==0)
 			path = null;
 		format = format.toLowerCase(Locale.US);
+		if (format.equals("fsz") || format.equals("focalscope")) {
+			if (path==null)
+				FocalScopeFile.saveAs(imp);
+			else
+				FocalScopeFile.save(imp, path);
+			return;
+		}
 		Roi roi2 = imp!=null?imp.getRoi():null;
 		if (roi2!=null)
 			roi2.endPaste();

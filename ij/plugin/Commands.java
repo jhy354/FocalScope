@@ -31,6 +31,8 @@ public class Commands implements PlugIn {
 			closeAll();
 		else if (cmd.equals("save"))
 			save();
+		else if (cmd.equals("save-as"))
+			saveAs();
 		else if (cmd.equals("revert"))
 			revert();
 		else if (cmd.equals("undo"))
@@ -58,16 +60,22 @@ public class Commands implements PlugIn {
     void save() {
     	ImagePlus imp = WindowManager.getCurrentImage();
 		if (imp!=null) {
-			if (imp.getStackSize()>1) {
+			if (imp.getStackSize()>1)
 				imp.setIgnoreFlush(true);
-				new FileSaver(imp).save();
-				imp.setIgnoreFlush(false);
-			} else
-				new FileSaver(imp).save();
+			FocalScopeFile.save(imp);
+			imp.setIgnoreFlush(false);
 		} else
 			IJ.noImage();
 	}
 	
+	void saveAs() {
+		ImagePlus imp = WindowManager.getCurrentImage();
+		if (imp!=null)
+			FocalScopeFile.saveAs(imp);
+		else
+			IJ.noImage();
+	}
+
     void undo() {
     	ImagePlus imp = WindowManager.getCurrentImage();
 		if (imp!=null)

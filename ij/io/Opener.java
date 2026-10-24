@@ -329,6 +329,10 @@ public class Opener {
 		OpenDialog.setLastDirectory(directory);
 		OpenDialog.setLastName(name);
 		String path = directory+name;
+		if (name.toLowerCase().endsWith(FocalScopeFile.EXTENSION)) {
+			imp = FocalScopeFile.open(path);
+			if (imp!=null) return imp;
+		}
 		this.fileType = getFileType(path);
 		if (IJ.debugMode) IJ.log("openImage: \""+types[this.fileType]+"\", "+path);
 		switch (this.fileType) {

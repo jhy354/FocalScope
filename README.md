@@ -8,6 +8,12 @@ FocalScope 2.1.1 是基于 ImageJ1 1.54u9 源码构建的图像处理软件，�
 
 > 为兼容 ImageJ1 插件和宏，Java 包名 `ij`、主类 `ij.ImageJ` 以及 TIFF/ROI 文件格式标记保持不变；界面、程序名、jar、exe、图标和项目链接均已改为 FocalScope。
 
+## 文件格式
+
+- `.fsz`：FocalScope 容器格式，本质是 ZIP，保存图像、标定信息、属性、当前 ROI、Overlay 和 ROI Manager 列表。
+- `文件 > 保存` / `另存为...`：使用 `.fsz`。
+- `文件 > 导出`：继续导出 TIFF、PNG、JPEG、BMP、GIF 等常规格式。
+
 ## 环境要求
 
 | 组件 | 要求 |

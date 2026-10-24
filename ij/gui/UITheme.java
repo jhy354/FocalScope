@@ -38,7 +38,7 @@ import ij.I18n;
 public final class UITheme {
 
 	private static final String[] SUPPORTED_IMAGE_EXTENSIONS = {
-		"tif", "tiff", "png", "jpg", "jpeg", "jpe", "jfif", "gif",
+		"fsz", "tif", "tiff", "png", "jpg", "jpeg", "jpe", "jfif", "gif",
 		"bmp", "dib", "dcm", "dicom", "ima", "fits", "fit", "fts",
 		"fits.gz", "fts.gz", "pgm", "ppm", "pbm", "pnm"
 	};

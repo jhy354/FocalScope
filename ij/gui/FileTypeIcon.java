@@ -157,7 +157,7 @@ public class FileTypeIcon implements Icon {
 	}
 
 	private static boolean isArchive(String ext) {
-		return "zip".equals(ext) || "gz".equals(ext) || "tar".equals(ext) || "7z".equals(ext)
+		return "zip".equals(ext) || "fsz".equals(ext) || "gz".equals(ext) || "tar".equals(ext) || "7z".equals(ext)
 			|| "rar".equals(ext) || "bz2".equals(ext);
 	}
 

@@ -458,8 +458,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 			if (d.cancelPressed())
 				return false;
 			else if (d.yesPressed()) {
-				FileSaver fs = new FileSaver(imp);
-				if (!fs.save()) return false;
+				if (!FocalScopeFile.save(imp)) return false;
 			}
 		}
 		closed = true;
