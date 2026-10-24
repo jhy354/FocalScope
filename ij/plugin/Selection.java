@@ -756,8 +756,10 @@ public class Selection implements PlugIn, Measurements {
 		Roi roi = imp.getRoi();
 		if (roi==null) return;
 		frame = WindowManager.getFrame("ROI Manager");
-		if (frame==null || !(frame instanceof RoiManager))
+		if (frame==null || !(frame instanceof RoiManager)) {
 			IJ.error("ROI Manager not found");
+			return;
+		}
 		RoiManager rm = (RoiManager)frame;
 		boolean altDown= IJ.altKeyDown();
 		IJ.setKeyUp(IJ.ALL_KEYS);

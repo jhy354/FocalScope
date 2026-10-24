@@ -547,6 +547,17 @@ public class WindowManager {
 			if (title.equals(winTitle))
 				return (Frame)win;
 		}
+		// Some windows use localized titles (for example the ROI Manager),
+		// while plugins still look them up by their English title.
+		String translated = I18n.label(title);
+		if (translated!=null && !translated.equals(title)) {
+			for (int i=0; i<nonImageList.size(); i++) {
+				Object win = nonImageList.get(i);
+				String winTitle = win instanceof Frame?((Frame)win).getTitle():null;
+				if (translated.equals(winTitle))
+					return (Frame)win;
+			}
+		}
 		Frame frame = getImageWindow(title);
 		if (frame==null) {
 			Window win = getWindow(title);
