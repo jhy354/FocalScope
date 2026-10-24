@@ -51,23 +51,28 @@ $modules = "java.base,java.compiler,java.desktop,java.logging,java.prefs,java.rm
 & $jlink --add-modules $modules --output (Join-Path $appDir "runtime") --strip-debug --no-header-files --no-man-pages --compress=2
 if ($LASTEXITCODE -ne 0) { throw "jlink failed ($LASTEXITCODE)." }
 
-Write-Host "==> Writing launcher" -ForegroundColor Cyan
-$launcher = @'
-@echo off
-setlocal
-cd /d "%~dp0"
-start "" "runtime\bin\javaw.exe" -Xmx1024m -jar "ij.jar" %*
-'@
-[IO.File]::WriteAllText((Join-Path $appDir "run.bat"), $launcher, [Text.Encoding]::ASCII)
+Write-Host "==> Building ImageJ.exe launcher" -ForegroundColor Cyan
+$csc = @(
+    (Join-Path $env:WINDIR "Microsoft.NET\Framework64\v4.0.30319\csc.exe"),
+    (Join-Path $env:WINDIR "Microsoft.NET\Framework\v4.0.30319\csc.exe")
+) | Where-Object { Test-Path $_ } | Select-Object -First 1
+if (-not $csc) {
+    throw ".NET Framework 4.x C# compiler (csc.exe) was not found."
+}
+$launcherSource = Join-Path $PSScriptRoot "launcher\ImageJLauncher.cs"
+$launcherExe = Join-Path $appDir "ImageJ.exe"
+& $csc /nologo /target:winexe /platform:anycpu "/out:$launcherExe" $launcherSource
+if ($LASTEXITCODE -ne 0) { throw "C# launcher compilation failed ($LASTEXITCODE)." }
 
 $readme = @"
 ImageJ $Version portable (Windows x64)
 =====================================
 
-Double-click run.bat to start ImageJ.
+Double-click ImageJ.exe to start ImageJ.
 
 Contents
 --------
+ImageJ.exe              launcher
 ij.jar                  ImageJ application
 runtime\                bundled Java 11 runtime
 IJ_Props.txt            menu/plugin definitions
