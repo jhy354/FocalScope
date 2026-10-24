@@ -72,7 +72,7 @@ public class StackWindow extends ImageWindow implements Runnable, AdjustmentList
 		//IJ.log("StackWindow: "+hyperStack+" "+nChannels+" "+nSlices+" "+nFrames+" "+imp);
 		if (nChannels>1) {
 			cSelector = new ScrollbarWithLabel(this, 1, 1, 1, nChannels+1, 'c');
-			add(cSelector);
+			getCanvasPanel().add(cSelector);
 			sliderHeight += cSelector.getPreferredSize().height + ImageWindow.VGAP;
 			if (ij!=null) cSelector.addKeyListener(ij);
 			cSelector.addAdjustmentListener(this);
@@ -85,7 +85,7 @@ public class StackWindow extends ImageWindow implements Runnable, AdjustmentList
 			if (stackSize==dim[2] && imp.isComposite()) label = 'c';
 			zSelector = new ScrollbarWithLabel(this, 1, 1, 1, nSlices+1, label);
 			if (label=='t') animationSelector = zSelector;
-			add(zSelector);
+			getCanvasPanel().add(zSelector);
 			sliderHeight += zSelector.getPreferredSize().height + ImageWindow.VGAP;
 			if (ij!=null) zSelector.addKeyListener(ij);
 			zSelector.addAdjustmentListener(this);
@@ -98,7 +98,7 @@ public class StackWindow extends ImageWindow implements Runnable, AdjustmentList
 		}
 		if (nFrames>1) {
 			animationSelector = tSelector = new ScrollbarWithLabel(this, 1, 1, 1, nFrames+1, 't');
-			add(tSelector);
+			getCanvasPanel().add(tSelector);
 			sliderHeight += tSelector.getPreferredSize().height + ImageWindow.VGAP;
 			if (ij!=null) tSelector.addKeyListener(ij);
 			tSelector.addAdjustmentListener(this);
@@ -359,17 +359,17 @@ public class StackWindow extends ImageWindow implements Runnable, AdjustmentList
 
 	void removeScrollbars() {
 		if (cSelector!=null) {
-			remove(cSelector);
+			getCanvasPanel().remove(cSelector);
 			cSelector.removeAdjustmentListener(this);
 			cSelector = null;
 		}
 		if (zSelector!=null) {
-			remove(zSelector);
+			getCanvasPanel().remove(zSelector);
 			zSelector.removeAdjustmentListener(this);
 			zSelector = null;
 		}
 		if (tSelector!=null) {
-			remove(tSelector);
+			getCanvasPanel().remove(tSelector);
 			tSelector.removeAdjustmentListener(this);
 			tSelector = null;
 		}

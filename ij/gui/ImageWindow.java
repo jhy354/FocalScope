@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.util.Properties;
 import java.awt.event.*;
+import javax.swing.SwingUtilities;
 import ij.*;
 import ij.process.*;
 import ij.io.*;
@@ -33,6 +34,8 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	Rectangle maxBounds; // Size of this window after it is maximized
 	long setMaxBoundsTime;
 	private int sliderHeight;
+	private Panel toolbarPanel;
+	private Panel canvasPanel;
 
 	private static final int XINC = 12;
 	private static final int YINC = 16;
@@ -90,8 +93,12 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		}
 		this.ic = ic;
 		ImageWindow previousWindow = imp.getWindow();
-		setLayout(new ImageLayout(ic));
-		add(ic);
+		setLayout(new BorderLayout());
+		toolbarPanel = new Panel(new BorderLayout());
+		add(toolbarPanel, BorderLayout.NORTH);
+		canvasPanel = new Panel(new ImageLayout(ic));
+		canvasPanel.add(ic);
+		add(canvasPanel, BorderLayout.CENTER);
  		addFocusListener(this);
  		addWindowListener(this);
  		addWindowStateListener(this);
@@ -255,7 +262,9 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	}
 
 	public Insets getInsets() {
-		return getInsets(true);
+		// BorderLayout uses these insets for the docked toolbar as well; keep
+		// native frame insets and let ImageLayout handle the image margins.
+		return super.getInsets();
 	}
 
 	/** Override Container getInsets() to make room for some text above the image.
@@ -506,6 +515,75 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	public ImageCanvas getCanvas() {
 		return ic;
 	}
+
+	public Panel getCanvasPanel() {
+		return canvasPanel;
+	}
+
+	private void installImageXChrome() {
+		if (this instanceof PlotWindow || this instanceof HistogramWindow)
+			return;
+		ImageJ main = IJ.getInstance();
+		Toolbar tb = Toolbar.getInstance();
+		if (tb!=null && tb.getParent()!=toolbarPanel) {
+			Container parent = tb.getParent();
+			if (parent!=null) parent.remove(tb);
+			toolbarPanel.removeAll();
+			toolbarPanel.add(tb, BorderLayout.CENTER);
+			toolbarPanel.revalidate();
+			revalidate();
+			pack();
+		}
+		if (!IJ.isMacro()) {
+			Prefs.setIJMenuBar = true;
+			if (imp!=null) imp.setIJMenuBar(true);
+			setImageJMenuBar(this);
+		}
+		if (main!=null)
+			main.setVisible(false);
+	}
+
+	private void restoreImageXChrome() {
+		if (this instanceof PlotWindow || this instanceof HistogramWindow)
+			return;
+		ImageJ main = IJ.getInstance();
+		if (main==null)
+			return;
+		Toolbar tb = Toolbar.getInstance();
+		if (tb!=null && isDescendant(tb, this)) {
+			Container parent = tb.getParent();
+			if (parent!=null) parent.remove(tb);
+			Panel host = main.getToolbarHost();
+			host.removeAll();
+			host.add(tb, BorderLayout.CENTER);
+			host.revalidate();
+			main.revalidate();
+			main.pack();
+		}
+		MenuBar mb = Menus.getMenuBar();
+		if (mb!=null && getMenuBar()==mb) {
+			setMenuBar(null);
+			main.setMenuBar(mb);
+		}
+		if (WindowManager.getImageCount()==0) {
+			main.setVisible(true);
+			main.toFront();
+		}
+	}
+
+	private static boolean isDescendant(Component c, Container ancestor) {
+		while (c!=null) {
+			if (c==ancestor) return true;
+			c = c.getParent();
+		}
+		return false;
+	}
+
+	@Override
+	public void dispose() {
+		restoreImageXChrome();
+		super.dispose();
+	}
 	
 
 	static ImagePlus getClipboard() {
@@ -601,8 +679,8 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 
 	public void windowActivated(WindowEvent e) {
 		if (IJ.debugMode) IJ.log("windowActivated: "+imp.getTitle());
-		if (IJ.isMacOSX() && Prefs.setIJMenuBar && !IJ.isMacro())
-			setImageJMenuBar(this);
+		if (!IJ.isMacro())
+			installImageXChrome();
 		if (imp==null)
 			return;
 		ImageJ ij = IJ.getInstance();
@@ -657,6 +735,11 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		if (amount<1) amount=1;
 		if (rotation==0)
 			return;
+		if (ImageCanvas.wheelZoomEnabled && ic!=null) {
+			Point p = SwingUtilities.convertPoint(this, e.getPoint(), ic);
+			ic.zoomAt(p.x, p.y, rotation<0);
+			return;
+		}
 		int width = imp.getWidth();
 		int height = imp.getHeight();
 		Rectangle srcRect = ic.getSrcRect();

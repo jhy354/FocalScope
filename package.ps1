@@ -3,7 +3,7 @@
 #   .\package.ps1
 #   .\package.ps1 -Version "1.54u9-zh"
 param(
-    [string]$Version = "1.54u9"
+    [string]$Version = "2.0"
 )
 
 $ErrorActionPreference = "Stop"
@@ -61,7 +61,7 @@ if (-not $csc) {
 }
 $launcherSource = Join-Path $PSScriptRoot "launcher\ImageXLauncher.cs"
 $launcherExe = Join-Path $appDir "ImageX.exe"
-& $csc /nologo /target:winexe /platform:anycpu "/win32icon:$PSScriptRoot\images\ImageX.ico" "/out:$launcherExe" $launcherSource
+& $csc /nologo /target:winexe /platform:anycpu "/win32icon:$PSScriptRoot\images\ImageX.ico" /r:System.Management.dll "/out:$launcherExe" $launcherSource
 if ($LASTEXITCODE -ne 0) { throw "C# launcher compilation failed ($LASTEXITCODE)." }
 
 $readme = @"

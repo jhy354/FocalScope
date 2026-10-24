@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Management;
 using System.Windows.Forms;
 
 internal static class ImageXLauncher
@@ -78,8 +79,32 @@ internal static class ImageXLauncher
 
     private static bool IsImageXRunning()
     {
-        string[] names = { "javaw", "java" };
+        string[] names = { "javaw.exe", "java.exe" };
         foreach (string name in names)
+        {
+            try
+            {
+                string query = "SELECT CommandLine FROM Win32_Process WHERE Name='" + name + "'";
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(query))
+                {
+                    foreach (ManagementObject process in searcher.Get())
+                    {
+                        string commandLine = process["CommandLine"] as string;
+                        if (commandLine != null &&
+                            (commandLine.IndexOf("ImageX.jar", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                             commandLine.IndexOf("imagex-", StringComparison.OrdinalIgnoreCase) >= 0))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Fall back to the window title if WMI is unavailable.
+            }
+        }
+        foreach (string name in new string[] { "javaw", "java" })
         {
             try
             {

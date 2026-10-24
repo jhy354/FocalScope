@@ -2,6 +2,7 @@ package ij;
 import ij.process.*;
 import ij.util.*;
 import ij.gui.ImageWindow;
+import ij.gui.ImageCanvas;
 import ij.plugin.MacroInstaller;
 import ij.gui.Toolbar;
 import ij.macro.Interpreter;
@@ -183,7 +184,16 @@ public class Menus {
 		addPlugInItem(image, "Rename...", "ij.plugin.SimpleCommands(\"rename\")", 0, false);
 		addPlugInItem(image, "Scale...", "ij.plugin.Scaler", KeyEvent.VK_E, false);
 		getMenu("Image>Transform", true);
-		getMenu("Image>Zoom", true);
+		Menu zoomMenu = getMenu("Image>Zoom", true);
+		if (zoomMenu!=null) {
+			zoomMenu.addSeparator();
+			CheckboxMenuItem wheelZoom = addCheckboxItem(zoomMenu, "Wheel Zoom",
+				"ij.plugin.ImageXViewOptions(\"wheel\")");
+			wheelZoom.setState(ImageCanvas.wheelZoomEnabled);
+			CheckboxMenuItem middlePan = addCheckboxItem(zoomMenu, "Middle-Button Pan",
+				"ij.plugin.ImageXViewOptions(\"pan\")");
+			middlePan.setState(ImageCanvas.middlePanEnabled);
+		}
 		getMenu("Image>Overlay", true);
 		image.addSeparator();
 		getMenu("Image>Lookup Tables", true);

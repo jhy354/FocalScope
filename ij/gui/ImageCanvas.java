@@ -69,6 +69,11 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 	protected double magnification;
 	protected int dstWidth, dstHeight;
 
+	public static boolean wheelZoomEnabled = Prefs.get("imagex.wheelZoom", true);
+	public static boolean middlePanEnabled = Prefs.get("imagex.middlePan", true);
+	private boolean middlePanning;
+	private int middlePanX, middlePanY;
+
 	protected int xMouseStart;
 	protected int yMouseStart;
 	protected int xSrcStart;
@@ -742,6 +747,49 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 		imp.setTitle(imp.getTitle());
 	}
 
+	/**
+	 * Zooms at a canvas position without resizing the image window. The source
+	 * rectangle is adjusted so the point under the cursor stays in place.
+	 */
+	public void zoomAt(int sx, int sy, boolean zoomIn) {
+		if (srcRect==null) return;
+		double oldMag = magnification;
+		double newMag = zoomIn ? getHigherZoomLevel(oldMag) : getLowerZoomLevel(oldMag);
+		if (newMag==oldMag) return;
+		int canvasWidth = dstWidth>0 ? dstWidth : getWidth();
+		int canvasHeight = dstHeight>0 ? dstHeight : getHeight();
+		if (canvasWidth<=0 || canvasHeight<=0) return;
+		int ox = srcRect.x + (int)Math.round(sx/oldMag);
+		int oy = srcRect.y + (int)Math.round(sy/oldMag);
+		int newWidth = (int)Math.round(canvasWidth/newMag);
+		int newHeight = (int)Math.round(canvasHeight/newMag);
+		if (newWidth>=imageWidth || newHeight>=imageHeight) {
+			newMag = Math.min((double)canvasWidth/imageWidth,
+				(double)canvasHeight/imageHeight);
+			newWidth = imageWidth;
+			newHeight = imageHeight;
+		}
+		if (newWidth<1) newWidth = 1;
+		if (newHeight<1) newHeight = 1;
+		int newX = ox - (int)Math.round(sx/newMag);
+		int newY = oy - (int)Math.round(sy/newMag);
+		newX = clamp(newX, 0, imageWidth-newWidth);
+		newY = clamp(newY, 0, imageHeight-newHeight);
+		srcRect = new Rectangle(newX, newY, newWidth, newHeight);
+		magnification = newMag;
+		repaint();
+	}
+
+	private static int clamp(int value, int min, int max) {
+		if (max<min) max = min;
+		return Math.max(min, Math.min(max, value));
+	}
+
+	private static boolean isMiddleButton(MouseEvent e) {
+		return e.getButton()==MouseEvent.BUTTON2 ||
+			(e.getModifiersEx()&InputEvent.BUTTON2_DOWN_MASK)!=0;
+	}
+
 	/** Resizes the canvas when the user resizes the window. */
 	void resizeCanvas(int width, int height) {
 		ImageWindow win = imp.getWindow();
@@ -1106,6 +1154,14 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 
 	public void mousePressed(final MouseEvent e) {
 		showCursorStatus = true;
+		if (middlePanEnabled && isMiddleButton(e)) {
+			middlePanning = true;
+			middlePanX = e.getX();
+			middlePanY = e.getY();
+			setCursor(moveCursor);
+			e.consume();
+			return;
+		}
 		int toolID = Toolbar.getToolId();
 		ImageWindow win = imp.getWindow();
 		if (win!=null && win.running2 && toolID!=Toolbar.MAGNIFIER) {
@@ -1341,6 +1397,21 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 	}
 
 	public void mouseDragged(MouseEvent e) {
+		if (middlePanning) {
+			int dx = e.getX()-middlePanX;
+			int dy = e.getY()-middlePanY;
+			if (srcRect!=null && (dx!=0 || dy!=0)) {
+				int newX = srcRect.x - (int)Math.round(dx/magnification);
+				int newY = srcRect.y - (int)Math.round(dy/magnification);
+				srcRect.x = clamp(newX, 0, imageWidth-srcRect.width);
+				srcRect.y = clamp(newY, 0, imageHeight-srcRect.height);
+				middlePanX = e.getX();
+				middlePanY = e.getY();
+				repaint();
+			}
+			e.consume();
+			return;
+		}
 		int x = e.getX();
 		int y = e.getY();
 		xMouse = offScreenX(x);
@@ -1587,6 +1658,12 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		if (middlePanning) {
+			middlePanning = false;
+			setCursor(defaultCursor);
+			e.consume();
+			return;
+		}
 
 		if (pressTimer!=null) {
 			pressTimer.cancel();

@@ -1,6 +1,6 @@
 # ImageX
 
-ImageX 是基于 ImageJ1 1.54u9 源码构建的图像处理软件，包含中文界面、独立应用图标和 Windows 便携版。
+ImageX 2.0 是基于 ImageJ1 1.54u9 源码构建的图像处理软件，包含中文界面、独立应用图标和 Windows 便携版。
 
 - GitHub：<https://github.com/jhy354/ImageX>
 - 发布页：<https://github.com/jhy354/ImageX/releases>
@@ -40,13 +40,13 @@ mvn clean package
 输出：
 
 ```text
-D:\ImageX\target\imagex-1.54u9-imagex.jar
+D:\ImageX\target\imagex-2.0.jar
 ```
 
 运行：
 
 ```powershell
-java -jar D:\ImageX\target\imagex-1.54u9-imagex.jar
+java -jar D:\ImageX\target\imagex-2.0.jar
 ```
 
 ## 打包为开箱即用的软件
@@ -60,14 +60,14 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 输出：
 
 ```text
-D:\ImageX\dist\ImageX-1.54u9-windows-x64\
-D:\ImageX\dist\ImageX-1.54u9-windows-x64.zip
+D:\ImageX\dist\ImageX-2.0-windows-x64\
+D:\ImageX\dist\ImageX-2.0-windows-x64.zip
 ```
 
 便携包内容：
 
 ```text
-ImageX-1.54u9-windows-x64\
+ImageX-2.0-windows-x64\
 ├─ ImageX.exe              启动程序
 ├─ ImageX.jar              ImageX 主程序
 ├─ runtime\                自带的 Java 11 运行时
