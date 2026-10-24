@@ -31,6 +31,8 @@ public class TextPanel extends Panel implements AdjustmentListener,
 	int iX,iY;
 	// data
 	String[] sColHead;
+	String[] sColDisplay;
+	String displayLabels;
 	Vector vData;
 	int[] iColWidth;
 	int iColCount,iRowCount;
@@ -135,6 +137,8 @@ public class TextPanel extends Panel implements AdjustmentListener,
 			sColHead = this.labels.split("\t");
         	iColCount = sColHead.length;
 		}
+		sColDisplay = sColHead;
+		displayLabels = this.labels;
 		flush();
 		vData = new Vector();
 		if (!(iColWidth!=null && iColWidth.length==iColCount && sameLabels && iColCount!=1)) {
@@ -152,6 +156,30 @@ public class TextPanel extends Panel implements AdjustmentListener,
 		return labels==null?"":labels;
 	}
 
+	/** Sets display-only headings, for example to add physical units. */
+	public synchronized void setDisplayHeadings(String labels) {
+		if (labels==null || labels.length()==0) {
+			sColDisplay = sColHead;
+			displayLabels = this.labels;
+		} else {
+			if (labels.endsWith("\t"))
+				labels = labels.substring(0, labels.length()-1);
+			sColDisplay = labels.split("\t");
+			displayLabels = labels;
+		}
+		if (iColWidth!=null && iColWidth.length>0)
+			iColWidth[0] = 0;
+		tc.repaint();
+	}
+
+	String getDisplayHeading(int column) {
+		if (sColDisplay!=null && column<sColDisplay.length)
+			return sColDisplay[column];
+		if (sColHead!=null && column<sColHead.length)
+			return sColHead[column];
+		return "";
+	}
+
 	public synchronized void updateColumnHeadings(String labels) {
 		this.labels = labels;
 		if (labels.equals("")) {
@@ -166,6 +194,8 @@ public class TextPanel extends Panel implements AdjustmentListener,
 			iColWidth=new int[iColCount];
 			columnsManuallyAdjusted = false;
 		}
+		sColDisplay = sColHead;
+		displayLabels = this.labels;
 	}
 
 	public void setFont(Font font, boolean antialiased) {

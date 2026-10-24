@@ -11,6 +11,7 @@ class TextCanvas extends Canvas {
 	Graphics gImage;
 	Image iImage;
 	boolean antialiased;
+	private double imageScale = 1.0;
 
 	TextCanvas(TextPanel tp) {
 		this.tp = tp;
@@ -39,8 +40,9 @@ class TextCanvas extends Canvas {
 		
 		if (iWidth<=0 || iHeight<=0) return;
 		g.setColor(Color.lightGray);
-		if (iImage==null)
-			makeImage(iWidth,iHeight);
+		double scale = getImageScale();
+		if (iImage==null || Math.abs(scale-imageScale)>0.01)
+			makeImage(iWidth,iHeight,scale);
 		if (tp.iRowHeight==0 || (tp.iColWidth.length>0 && tp.iColWidth[0]==0&&tp.iRowCount>0)) {
 			tp.iRowHeight=fMetrics.getHeight()+2;
 			for (int i=0; i<tp.iColCount; i++)
@@ -83,18 +85,30 @@ class TextCanvas extends Canvas {
 			}
 		}
 		if (iImage!=null)
-			g.drawImage(iImage,0,0,null);
+			g.drawImage(iImage,0,0,iWidth,iHeight,null);
 	}
   
- 	void makeImage(int iWidth, int iHeight) {
-		iImage=createImage(iWidth, iHeight);
+ 	void makeImage(int iWidth, int iHeight, double scale) {
+		imageScale = scale;
+		int imageWidth = (int)Math.ceil(iWidth*scale);
+		int imageHeight = (int)Math.ceil(iHeight*scale);
+		iImage=createImage(imageWidth, imageHeight);
 		if (gImage!=null)
 			gImage.dispose();
 		gImage=iImage.getGraphics();
+		if (scale!=1.0)
+			((Graphics2D)gImage).scale(scale,scale);
 		gImage.setFont(fFont);
 		Java2.setAntialiasedText(gImage, antialiased);
 		if (fMetrics==null)
 			fMetrics=gImage.getFontMetrics();
+	}
+
+	private double getImageScale() {
+		GraphicsConfiguration gc = getGraphicsConfiguration();
+		if (gc==null) return 1.0;
+		double scale = gc.getDefaultTransform().getScaleX();
+		return scale>1.0?scale:1.0;
 	}
 
  	void drawColumnLabels(int iWidth) {
@@ -106,8 +120,8 @@ class TextCanvas extends Canvas {
 			gImage.setColor(Color.lightGray);
 			gImage.fillRect(x+1,0,w,tp.iRowHeight);
 			gImage.setColor(Color.black);
-			if (i<tp.sColHead.length && tp.sColHead[i]!=null)
-				gImage.drawString(tp.sColHead[i],x+2,tp.iRowHeight-5);
+			if (i<tp.iColCount && tp.getDisplayHeading(i)!=null)
+				gImage.drawString(tp.getDisplayHeading(i),x+2,tp.iRowHeight-5);
 			if (tp.iColCount>0) {
 				gImage.setColor(Color.darkGray);
 				gImage.drawLine(x+w-1,0,x+w-1,tp.iRowHeight-1);
@@ -131,10 +145,10 @@ class TextCanvas extends Canvas {
 			fMetrics=gImage.getFontMetrics();
 		int w=15;
 		int maxRows = 20;
-		if (column==0 && tp.sColHead[0].equals(" "))
+		if (column==0 && tp.getDisplayHeading(0).equals(" "))
 			w += 5;
 		else {
-			char[] chars = tp.sColHead[column].toCharArray();
+			char[] chars = tp.getDisplayHeading(column).toCharArray();
 			w = Math.max(w,fMetrics.charsWidth(chars,0,chars.length));
 		}
 		int rowCount = Math.min(tp.iRowCount, maxRows);

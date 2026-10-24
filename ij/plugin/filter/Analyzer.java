@@ -227,6 +227,8 @@ public class Analyzer implements PlugInFilter, Measurements {
 			rt.setPrecision((systemMeasurements&SCIENTIFIC_NOTATION)!=0?-precision:precision);
 			if (rt.size()>0)
 				rt.show("Results");
+			if (IJ.isResultsWindow())
+				IJ.getTextPanel().setDisplayHeadings(getDisplayHeadings());
 		}
 	}
 	
@@ -728,6 +730,8 @@ public class Analyzer implements PlugInFilter, Measurements {
 			for (int i=0; i<4; i++)
 				rt.deleteRow(rt.size()-1);
 			rt.show("Results");
+			if (IJ.isResultsWindow())
+				IJ.getTextPanel().setDisplayHeadings(getDisplayHeadings());
 		}
 	}
 		
@@ -846,8 +850,12 @@ public class Analyzer implements PlugInFilter, Measurements {
 		if (rt.columnDeleted())
 			return;
 		int counter = rt.size();
-		if (counter==1)
+		if (counter==1) {
 			IJ.setColumnHeadings(rt.getColumnHeadings());
+			TextPanel tp = IJ.getTextPanel();
+			if (tp!=null)
+				tp.setDisplayHeadings(getDisplayHeadings());
+		}
 		TextPanel tp = IJ.isResultsWindow()?IJ.getTextPanel():null;
 		int lineCount = tp!=null?IJ.getTextPanel().getLineCount():0;
 		if (counter>lineCount+1) { // delete rt rows added by particle analyzer
@@ -859,14 +867,80 @@ public class Analyzer implements PlugInFilter, Measurements {
 		}
 		if (!resultsUpdated && counter>1 && rt.getColumnIndex("Group")>=0 && rt.getValue("Group",counter-1)>0) {
 			rt.show("Results");
+			if (IJ.isResultsWindow())
+				IJ.getTextPanel().setDisplayHeadings(getDisplayHeadings());
 			resultsUpdated = true;
 		} else
 			IJ.write(rt.getRowAsString(counter-1));
 	}
 
+	private String getDisplayHeadings() {
+		String headings = rt.getColumnHeadings();
+		if (headings.length()==0)
+			return headings;
+		String[] columns = headings.split("\t", -1);
+		Calibration cal = imp!=null?imp.getCalibration():null;
+		String spatial = spatialUnit(cal);
+		String area = spatial + "\u00B2";
+		String intensity = intensityUnit(cal);
+		for (int i=0; i<columns.length; i++) {
+			String unit = unitForColumn(columns[i], spatial, area, intensity);
+			if (unit!=null && !columns[i].endsWith(" ("+unit+")"))
+				columns[i] += " (" + unit + ")";
+		}
+		StringBuffer sb = new StringBuffer();
+		for (int i=0; i<columns.length; i++) {
+			if (i>0) sb.append('\t');
+			sb.append(columns[i]);
+		}
+		return sb.toString();
+	}
+
+	private String spatialUnit(Calibration cal) {
+		if (cal!=null && cal.scaled()) {
+			String unit = cal.getUnit();
+			if (unit!=null && unit.length()>0 && !"pixel".equals(unit))
+				return unit;
+		}
+		return "px";
+	}
+
+	private String intensityUnit(Calibration cal) {
+		if (imp==null || imp.getType()==ImagePlus.COLOR_RGB)
+			return null;
+		if (cal!=null) {
+			String unit = cal.getValueUnit();
+			if (unit!=null && unit.length()>0 && !"Gray Value".equals(unit))
+				return unit;
+		}
+		return imp.getType()==ImagePlus.GRAY32?"intensity":"gray";
+	}
+
+	private String unitForColumn(String name, String spatial, String area, String intensity) {
+		name = name.trim();
+		if ("Area".equals(name)) return area;
+		if ("%Area".equals(name)) return "%";
+		if ("Angle".equals(name) || "FeretAngle".equals(name)) return "\u00B0";
+		if ("X".equals(name) || "Y".equals(name) || "XM".equals(name) || "YM".equals(name)
+			|| "BX".equals(name) || "BY".equals(name) || "Width".equals(name)
+			|| "Height".equals(name) || "Perim.".equals(name) || "Length".equals(name)
+			|| "Feret".equals(name) || "MinFeret".equals(name) || "FeretX".equals(name)
+			|| "FeretY".equals(name) || "Major".equals(name) || "Minor".equals(name)
+			|| "RRLength".equals(name) || "RRWidth".equals(name))
+			return spatial;
+		if (intensity!=null && ("Mean".equals(name) || "StdDev".equals(name) || "Mode".equals(name)
+			|| "Min".equals(name) || "Max".equals(name) || "Median".equals(name)
+			|| "Skew".equals(name) || "Kurt".equals(name) || "MinThr".equals(name)
+			|| "MaxThr".equals(name)))
+			return intensity;
+		return null;
+	}
+
 	/** Redisplays the results table. */
 	public void updateHeadings() {
 		rt.show("Results");
+		if (IJ.isResultsWindow())
+			IJ.getTextPanel().setDisplayHeadings(getDisplayHeadings());
 	}
 
 	/** Converts a number to a formatted string with a tab at the end. */

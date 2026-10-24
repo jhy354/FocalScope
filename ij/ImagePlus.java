@@ -2829,7 +2829,9 @@ public class ImagePlus implements ImageObserver, Measurements, Cloneable {
 			xx = " ("+x+")";
 			yy = " ("+y+")";
 		}
-		String s = " x="+d2s(cal.getX(x)) + xx + ", y=" + d2s(cal.getY(y,height)) + yy;
+		String xUnit = getSpatialUnit(cal, true);
+		String yUnit = getSpatialUnit(cal, false);
+		String s = " x="+d2s(cal.getX(x)) + " " + xUnit + xx + ", y=" + d2s(cal.getY(y,height)) + " " + yUnit + yy;
 		if (getStackSize()>1) {
 			Roi roi2 = getRoi();
 			if (roi2==null || roi2.getState()==Roi.NORMAL) {
@@ -2841,6 +2843,29 @@ public class ImagePlus implements ImageObserver, Measurements, Cloneable {
 		return s;
     }
 
+	private String getSpatialUnit(Calibration cal, boolean x) {
+		if (cal!=null && cal.scaled()) {
+			String unit = x?cal.getXUnit():cal.getYUnit();
+			if (unit==null || unit.length()==0)
+				unit = cal.getUnit();
+			if (unit!=null && unit.length()>0 && !"pixel".equals(unit))
+				return unit;
+		}
+		return "px";
+	}
+
+	private String getIntensityUnit(Calibration cal) {
+		int type = getType();
+		if (type==COLOR_RGB)
+			return null;
+		if (cal!=null) {
+			String unit = cal.getValueUnit();
+			if (unit!=null && unit.length()>0 && !"Gray Value".equals(unit))
+				return unit;
+		}
+		return type==GRAY32?"intensity":"gray";
+	}
+
     private String d2s(double n) {
 		return n==(int)n?Integer.toString((int)n):IJ.d2s(n);
 	}
@@ -2850,7 +2875,9 @@ public class ImagePlus implements ImageObserver, Measurements, Cloneable {
     		return "";
 		Calibration cal = getCalibration();
     	int[] v = getPixel(x, y);
-    	int type = getType();
+		int type = getType();
+		String unit = getIntensityUnit(cal);
+		String unitText = unit!=null ? " " + unit : "";
 		switch (type) {
 			case GRAY8: case GRAY16: case COLOR_256:
 				if (type==COLOR_256) {
@@ -2861,13 +2888,13 @@ public class ImagePlus implements ImageObserver, Measurements, Cloneable {
 				}
 				double cValue = cal.getCValue(v[0]);
 				if (cValue==v[0])
-    				return(", value=" + v[0]);
+    				return(", value=" + v[0] + unitText);
     			else
-    				return(", value=" + IJ.d2s(cValue) + " ("+v[0]+")");
+    				return(", value=" + IJ.d2s(cValue) + " ("+v[0]+")" + unitText);
     		case GRAY32:
     			double value = Float.intBitsToFloat(v[0]);
     			String s = (int)value==value?IJ.d2s(value,0)+".0":IJ.d2s(value,4,7);
-    			return(", value=" + s);
+    			return(", value=" + s + unitText);
 			case COLOR_RGB:
 				if (ip!=null && ip.getNChannels()==1)
 	 				return(", value=" + v[0]);

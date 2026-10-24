@@ -231,13 +231,15 @@ public class TextWindow extends Frame implements ActionListener, FocusListener, 
 		if (font!=null)
        		textPanel.setFont(font, antialiasedButton.getState());
        	else {
-        	textPanel.setFont(new Font(getFontName(), Font.PLAIN, sizes[fontSize]), antialiasedButton.getState());
+        	textPanel.setFont(getDefaultFont(), antialiasedButton.getState());
        	}
 	}
-	
-    private String getFontName() {
-    	return monospacedButton.getState()?"Monospaced":"SansSerif";
-    }
+
+	private Font getDefaultFont() {
+		if (monospacedButton.getState())
+			return new Font("Monospaced", Font.PLAIN, sizes[fontSize]);
+		return UITheme.font(Font.PLAIN, sizes[fontSize]);
+	}
 
 	boolean openFile(String path) {
 		OpenDialog od = new OpenDialog("Open Text File...", path);

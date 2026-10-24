@@ -542,7 +542,14 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	private String defaultStatusText() {
 		if (imp==null)
 			return " ";
-		return "  " + imp.getTitle() + "  " + imp.getWidth() + " x " + imp.getHeight();
+		String unit = "px";
+		Calibration cal = imp.getCalibration();
+		if (cal!=null && cal.scaled()) {
+			String u = cal.getUnit();
+			if (u!=null && u.length()>0 && !"pixel".equals(u))
+				unit = u;
+		}
+		return "  " + imp.getTitle() + "  " + imp.getWidth() + " x " + imp.getHeight() + " " + unit;
 	}
 
 	private void fitCanvasLater() {
