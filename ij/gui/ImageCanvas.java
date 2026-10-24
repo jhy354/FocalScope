@@ -216,41 +216,14 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 	
     public void paint(Graphics g) {
 		painted = true;
+		if (imageWidth!=0) {
+			paintDoubleBuffered(g);
+			setPaintPending(false);
+			return;
+		}
 		Color background = getBackground();
 		g.setColor(background!=null?background:Color.white);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		Roi roi = imp.getRoi();
-		Overlay overlay = imp.getOverlay();
-		if (roi!=null || overlay!=null || showAllOverlay!=null || Prefs.paintDoubleBuffered || (IJ.isLinux() && magnification<0.25)) {
-			// Use double buffering to avoid flickering of ROIs and to work around
-			// a Linux problem with large images not showing at low magnification.
-			if (roi!=null)
-				roi.updatePaste();
-			if (imageWidth!=0) {
-				paintDoubleBuffered(g);
-				setPaintPending(false);
-				return;
-			}
-		}
-		try {
-			if (imageUpdated) {
-				imageUpdated = false;
-				imp.updateImage();
-			}
-			setInterpolation(g, Prefs.interpolateScaledImages);
-			Image img = imp.getImage();
-			if (img!=null)
- 				g.drawImage(img, 0, 0, (int)(srcRect.width*magnification+0.5), (int)(srcRect.height*magnification+0.5),
-				srcRect.x, srcRect.y, srcRect.x+srcRect.width, srcRect.y+srcRect.height, null);
-			if (overlay!=null)
-				drawOverlay(overlay, g);
-			if (showAllOverlay!=null)
-				drawOverlay(showAllOverlay, g);
-			if (roi!=null) drawRoi(roi, g);
-			if (srcRect.width<imageWidth || srcRect.height<imageHeight)
-				drawZoomIndicator(g);
-			//if (IJ.debugMode) showFrameRate(g);
-		} catch(OutOfMemoryError e) {IJ.outOfMemory("Paint");}
 		setPaintPending(false);
     }
     
@@ -541,23 +514,32 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 			g.drawRect(x1+x2, y1+y2, w2, h2);
 	}
 
-	// Use double buffer to reduce flicker when drawing complex ROIs.
+	// Use a canvas-sized double buffer to avoid both flicker and stale pixels.
 	// Author: Erik Meijering
 	void paintDoubleBuffered(Graphics g) {
 		final int srcRectWidthMag = (int)(srcRect.width*magnification+0.5);
 		final int srcRectHeightMag = (int)(srcRect.height*magnification+0.5);
-		if (offScreenImage==null || offScreenWidth!=srcRectWidthMag || offScreenHeight!=srcRectHeightMag) {
-			offScreenImage = createImage(srcRectWidthMag, srcRectHeightMag);
-			offScreenWidth = srcRectWidthMag;
-			offScreenHeight = srcRectHeightMag;
+		int canvasWidth = getWidth();
+		int canvasHeight = getHeight();
+		if (canvasWidth<1) canvasWidth = srcRectWidthMag;
+		if (canvasHeight<1) canvasHeight = srcRectHeightMag;
+		if (offScreenImage==null || offScreenWidth!=canvasWidth || offScreenHeight!=canvasHeight) {
+			offScreenImage = createImage(canvasWidth, canvasHeight);
+			offScreenWidth = canvasWidth;
+			offScreenHeight = canvasHeight;
 		}
 		Roi roi = imp.getRoi();
+		if (roi!=null)
+			roi.updatePaste();
 		try {
 			if (imageUpdated) {
 				imageUpdated = false;
 				imp.updateImage();
 			}
 			Graphics offScreenGraphics = offScreenImage.getGraphics();
+			Color background = getBackground();
+			offScreenGraphics.setColor(background!=null?background:Color.white);
+			offScreenGraphics.fillRect(0, 0, canvasWidth, canvasHeight);
 			setInterpolation(offScreenGraphics, Prefs.interpolateScaledImages);
 			Image img = imp.getImage();
 			if (img!=null)
@@ -572,7 +554,7 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 				drawRoi(roi, offScreenGraphics);
 			if (srcRect.width<imageWidth || srcRect.height<imageHeight)
 				drawZoomIndicator(offScreenGraphics);
-			//if (IJ.debugMode) showFrameRate(offScreenGraphics);
+			offScreenGraphics.dispose();
 			g.drawImage(offScreenImage, 0, 0, null);
 		}
 		catch(OutOfMemoryError e) {IJ.outOfMemory("Paint");}
