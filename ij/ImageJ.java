@@ -145,7 +145,7 @@ public class ImageJ extends Frame implements ActionListener,
 		If  'mode' is ImageJ.EMBEDDED and 'applet is null, creates an embedded 
 		(non-standalone) version of ImageJ. */
 	public ImageJ(java.applet.Applet applet, int mode) {
-		super("ImageJ");
+		super("ImageX");
 		if ((mode&DEBUG)!=0)
 			IJ.setDebugMode(true);
 		mode = mode & 255;
@@ -154,7 +154,7 @@ public class ImageJ extends Frame implements ActionListener,
 			mode = STANDALONE;
 			useExceptionHandler = true;
 		}
-		if (IJ.debugMode) IJ.log("ImageJ starting in debug mode: "+mode);
+		if (IJ.debugMode) IJ.log("ImageX starting in debug mode: "+mode);
 		embedded = applet==null && (mode==EMBEDDED||mode==NO_SHOW);
 		this.applet = applet;
 		String err1 = Prefs.load(this, applet);
@@ -287,7 +287,8 @@ public class ImageJ extends Frame implements ActionListener,
 	}
 	
     void setIcon() throws Exception {
-		URL url = this.getClass().getResource("/microscope.gif");
+		URL url = this.getClass().getResource("/ImageX.png");
+		if (url==null) url = this.getClass().getResource("/microscope.gif");
 		if (url==null) return;
 		Image img = createImage((ImageProducer)url.getContent());
 		if (img!=null) setIconImage(img);
@@ -416,7 +417,7 @@ public class ImageJ extends Frame implements ActionListener,
 	}
 
 	private String version() {
-		return "ImageJ "+VERSION+BUILD + "; "+"Java "+System.getProperty("java.version")+(IJ.is64Bit()?" [64-bit]; ":" [32-bit]; ");
+		return "ImageX "+VERSION+BUILD + "; "+"Java "+System.getProperty("java.version")+(IJ.is64Bit()?" [64-bit]; ":" [32-bit]; ");
 	}
 	
 	public void mouseReleased(MouseEvent e) {}
@@ -852,8 +853,8 @@ public class ImageJ extends Frame implements ActionListener,
 			}
 		}
 		if (windowClosed && !changes && Menus.window.getItemCount()>Menus.WINDOW_MENU_ITEMS && !(IJ.macroRunning()&&WindowManager.getImageCount()==0)) {
-			GenericDialog gd = new GenericDialog("ImageJ", this);
-			gd.addMessage("Are you sure you want to quit ImageJ?");
+			GenericDialog gd = new GenericDialog("ImageX", this);
+			gd.addMessage("Are you sure you want to quit ImageX?");
 			gd.showDialog();
 			quitting = !gd.wasCanceled();
 			windowClosed = false;

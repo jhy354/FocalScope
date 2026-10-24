@@ -7,29 +7,27 @@ import ij.io.*;
 import java.net.URL;
 import java.awt.image.*;
 
-	/** This plugin implements the Help/About ImageJ command by opening
-	 * about.jpg in ij.jar, scaling it 600% and adding text to an overlay.
-	*/
+	/** This plugin implements the Help/About ImageX command. */
 	public class AboutBox implements PlugIn {
 		private static final int SMALL_FONT=20, LARGE_FONT=45;
-		private static final Color TEXT_COLOR = new Color(255,255,80);
+		private static final Color TEXT_COLOR = new Color(255,255,255);
 
 	public void run(String arg) {
 		System.gc();
 		int lines = 7;
 		String[] text = new String[lines];
-		text[0] = "ImageJ "+ImageJ.VERSION+ImageJ.BUILD;
-		text[1] = "Wayne Rasband and contributors";
-		text[2] = "National Institutes of Health, USA";
-		text[3] = "http://imagej.org";
+		text[0] = "ImageX "+ImageJ.VERSION+ImageJ.BUILD;
+		text[1] = "ImageX contributors";
+		text[2] = "Open-source image analysis";
+		text[3] = "https://github.com/jhy354/ImageX";
 		text[4] = "Java "+System.getProperty("java.version")+(IJ.is64Bit()?" (64-bit)":" (32-bit)");
 		text[5] = IJ.freeMemory();
-		text[6] = "ImageJ is in the public domain";
+		text[6] = "ImageX is in the public domain";
 		ImageProcessor ip = null;
 		ImageJ ij = IJ.getInstance();
 		if (ij==null)
 			return;
-		URL url = ij.getClass().getResource("/about.jpg");
+		URL url = ij.getClass().getResource("/ImageX.png");
 		if (url!=null) {
 			Image img = null;
 			try {img = ij.createImage((ImageProducer)url.getContent());}
@@ -41,14 +39,15 @@ import java.awt.image.*;
 		}
 		if (ip==null) 
 			ip =  new ColorProcessor(55,45);
-		ip = ip.resize(ip.getWidth()*6, ip.getHeight()*6);
-		ImagePlus imp = new ImagePlus("About ImageJ", ip);
+		int scale = ip.getWidth()<300?3:6;
+		ip = ip.resize(ip.getWidth()*scale, ip.getHeight()*scale);
+		ImagePlus imp = new ImagePlus("About ImageX", ip);
 		int width = imp.getWidth();
 		Overlay overlay = new Overlay();
 		Font font = new Font("SansSerif", Font.PLAIN, LARGE_FONT);
 		int y  = 60;
 		add(text[0], width-20, y, font, TextRoi.RIGHT, overlay);
-		int xcenter = 410;
+		int xcenter = width/2;
 		font = new Font("SansSerif", Font.PLAIN, SMALL_FONT);
 		y += 45;
 		add(text[1], xcenter, y, font, TextRoi.CENTER, overlay);

@@ -447,7 +447,7 @@ public class TiffDecoder {
 							else if (bitDepth==16)
 								fi.fileType = FileInfo.GRAY16_UNSIGNED;
 							else
-								error("ImageJ cannot open interleaved "+bitDepth+"-bit images.");
+								error("ImageX cannot open interleaved "+bitDepth+"-bit images.");
 							in.seek(saveLoc);
 						}
 						break;
@@ -502,7 +502,7 @@ public class TiffDecoder {
 					if (value==5)  {// LZW compression
 						fi.compression = FileInfo.LZW;
 						if (fi.fileType==FileInfo.GRAY12_UNSIGNED||fi.fileType==FileInfo.GRAY10_UNSIGNED)
-							error("ImageJ cannot open 10-bit or 12-bit LZW-compressed TIFFs");
+							error("ImageX cannot open 10-bit or 12-bit LZW-compressed TIFFs");
 					} else if (value==32773)  // PackBits compression
 						fi.compression = FileInfo.PACK_BITS;
 					else if (value==32946 || value==8) //8=Adobe deflate
@@ -511,7 +511,7 @@ public class TiffDecoder {
 						// don't abort with Spot camera compressed (7) thumbnails
 						// otherwise, this is an unknown compression type
 						fi.compression = FileInfo.COMPRESSION_UNKNOWN;
-						error("ImageJ cannot open TIFF files " +
+						error("ImageX cannot open TIFF files " +
 							"compressed in this fashion ("+value+")");
 					}
 					break;
@@ -536,7 +536,7 @@ public class TiffDecoder {
 						getColorMap(lvalue, fi);
 					break;
 				case TILE_WIDTH:
-					error("ImageJ cannot open tiled TIFFs.\nTry using the Bio-Formats plugin.");
+					error("ImageX cannot open tiled TIFFs.\nTry using the Bio-Formats plugin.");
 					break;
 				case SAMPLE_FORMAT:
 					if (fi.fileType==FileInfo.GRAY32_INT && value==FLOATING_POINT)
@@ -545,7 +545,7 @@ public class TiffDecoder {
 						if (value==SIGNED)
 							fi.fileType = FileInfo.GRAY16_SIGNED;
 						if (value==FLOATING_POINT)
-							error("ImageJ cannot open 16-bit float TIFFs");
+							error("ImageX cannot open 16-bit float TIFFs");
 					}
 					break;
 				case JPEG_TABLES:

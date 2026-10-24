@@ -435,7 +435,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 			if (imp.isLocked())
 				msg += "\nWARNING: This image is locked.\nProbably, processing is unfinished (slow or still previewing).";
 			toFront();
-			YesNoCancelDialog d = new YesNoCancelDialog(this, "ImageJ", msg);
+			YesNoCancelDialog d = new YesNoCancelDialog(this, "ImageX", msg);
 			if (d.cancelPressed())
 				return false;
 			else if (d.yesPressed()) {

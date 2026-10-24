@@ -3,25 +3,25 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
-internal static class ImageJLauncher
+internal static class ImageXLauncher
 {
     [STAThread]
     private static void Main(string[] args)
     {
         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
         string java = Path.Combine(baseDir, @"runtime\bin\javaw.exe");
-        string jar = Path.Combine(baseDir, "ij.jar");
+        string jar = Path.Combine(baseDir, "ImageX.jar");
 
         if (!File.Exists(java))
         {
             MessageBox.Show("Bundled Java runtime not found:\n" + java,
-                "ImageJ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                "ImageX", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
         if (!File.Exists(jar))
         {
-            MessageBox.Show("ij.jar not found:\n" + jar,
-                "ImageJ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("ImageX.jar not found:\n" + jar,
+                "ImageX", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
 
@@ -31,11 +31,11 @@ internal static class ImageJLauncher
             arguments += " \"" + arg.Replace("\"", "\\\"") + "\"";
         }
 
-        // ImageJ keeps an RMI stub in %TEMP%. A stale stub (left behind by a
+        // ImageX keeps an RMI stub in %TEMP%. A stale stub (left behind by a
         // forced shutdown) makes the next launch wait for the RMI connect
         // timeout, which can take about five seconds. Remove it only when no
-        // ImageJ window is running; otherwise the existing instance is used.
-        if (!IsImageJRunning())
+        // ImageX window is running; otherwise the existing instance is used.
+        if (!IsImageXRunning())
         {
             try
             {
@@ -65,18 +65,18 @@ internal static class ImageJLauncher
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Could not start ImageJ:\n" + ex.Message,
-                "ImageJ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("Could not start ImageX:\n" + ex.Message,
+                "ImageX", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
     private static string GetStubPath()
     {
         return Path.Combine(Path.GetTempPath(),
-            "ImageJ-" + Environment.UserName + "-57294.stub");
+            "ImageX-" + Environment.UserName + "-57294.stub");
     }
 
-    private static bool IsImageJRunning()
+    private static bool IsImageXRunning()
     {
         string[] names = { "javaw", "java" };
         foreach (string name in names)
@@ -87,7 +87,7 @@ internal static class ImageJLauncher
                 {
                     try
                     {
-                        if (p.MainWindowTitle == "ImageJ") return true;
+                        if (p.MainWindowTitle == "ImageX") return true;
                     }
                     catch (Exception)
                     {

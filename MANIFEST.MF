@@ -1,2 +1,3 @@
 Main-Class: ij.ImageJ
-
+Implementation-Title: ImageX
+Implementation-Version: 1.54u9-imagex

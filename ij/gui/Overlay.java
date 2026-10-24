@@ -514,7 +514,7 @@ public class Overlay implements Iterable<Roi> {
 			return;
 		int count = last-first+1;
 		if (overlay.size()==count && !IJ.isMacro()) {
-			if (count==1 || IJ.showMessageWithCancel("ImageJ", "Delete "+overlay.size()+" element overlay?  "))
+			if (count==1 || IJ.showMessageWithCancel("ImageX", "Delete "+overlay.size()+" element overlay?  "))
 				imp.setOverlay(null);
 			return;
 		}

@@ -79,7 +79,7 @@ public class OtherInstance {
 		}
 		String tmpDir = System.getProperty("java.io.tmpdir");
 		tmpDir = IJ.addSeparator(tmpDir);
-		return tmpDir + "ImageJ-"
+		return tmpDir + "ImageX-"
 			+ System.getProperty("user.name") + "-"
 			+ (display == null ? "" : display + "-")
 			+ ImageJ.getPort() + ".stub";

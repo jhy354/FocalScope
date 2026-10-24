@@ -433,7 +433,7 @@ public class Prefs {
 				if (IJ.isMacOSX())
 					dir += "/Library/Preferences";
 				else
-					dir += File.separator+".imagej";
+					dir += File.separator+".imagex";
 				prefsDir = dir;
 			}
 		}		
@@ -520,9 +520,9 @@ public class Prefs {
 			NewImage.savePreferences(prefs);
 			String prefsDir = getPrefsDir();
 			path = prefsDir+separator+PREFS_NAME;
-			if (prefsDir.endsWith(".imagej")) {
+			if (prefsDir.endsWith(".imagex")) {
 				File f = new File(prefsDir);
-				if (!f.exists()) f.mkdir(); // create .imagej directory
+				if (!f.exists()) f.mkdir(); // create .imagex directory
 			}
 			if (resetPreferences) {
 				File f = new File(path);
@@ -683,7 +683,7 @@ public class Prefs {
 	public static void savePrefs(Properties prefs, String path) throws IOException{
 		FileOutputStream fos = new FileOutputStream(path);
 		BufferedOutputStream bos = new BufferedOutputStream(fos);
-		prefs.store(bos, "ImageJ "+ImageJ.VERSION+" Preferences");
+		prefs.store(bos, "ImageX "+ImageJ.VERSION+" Preferences");
 		bos.close();
 	}
 	

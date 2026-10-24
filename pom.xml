@@ -9,22 +9,22 @@
 		<relativePath />
 	</parent>
 
-	<groupId>net.imagej</groupId>
-	<artifactId>ij</artifactId>
-	<version>1.x-SNAPSHOT</version>
+	<groupId>com.github.jhy354</groupId>
+	<artifactId>imagex</artifactId>
+	<version>1.54u9-imagex</version>
 
-	<name>ImageJ</name>
-	<description>ImageJ is an open source Java image processing program inspired by NIH Image for the Macintosh.</description>
-	<url>https://imagej.net/ij</url>
+	<name>ImageX</name>
+	<description>ImageX is a modernized, Chinese-localized build based on ImageJ1.</description>
+	<url>https://github.com/jhy354/ImageX</url>
 	<inceptionYear>1997</inceptionYear>
 	<organization>
-		<name>NIH</name>
-		<url>https://nih.gov/</url>
+		<name>ImageX</name>
+		<url>https://github.com/jhy354/ImageX</url>
 	</organization>
 	<licenses>
 		<license>
 			<name>Public domain</name>
-			<url>https://imagej.net/ij/disclaimer.html</url>
+			<url>https://github.com/jhy354/ImageX/blob/main/LICENSE.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -33,7 +33,7 @@
 		<developer>
 			<id>rasband</id>
 			<name>Wayne Rasband</name>
-			<url>https://imagej.net/people/rasband</url>
+			<url>https://github.com/jhy354/ImageX</url>
 			<roles>
 				<role>founder</role>
 				<role>lead</role>
@@ -51,31 +51,24 @@
 
 	<mailingLists>
 		<mailingList>
-			<name>ImageJ</name>
-			<subscribe>https://imagej.net/ij/list.html</subscribe>
-			<unsubscribe>https://imagej.net/ij/list.html</unsubscribe>
-			<post>imagej@list.nih.gov</post>
-			<archive>https://list.nih.gov/archives/imagej.html</archive>
-		</mailingList>
-		<mailingList>
-			<name>Image.sc Forum</name>
-			<archive>https://forum.image.sc/tag/imagej</archive>
+			<name>ImageX Issues</name>
+			<archive>https://github.com/jhy354/ImageX/issues</archive>
 		</mailingList>
 	</mailingLists>
 
 	<scm>
-		<connection>scm:git:https://github.com/imagej/ImageJ</connection>
-		<developerConnection>scm:git:git@github.com:imagej/ImageJ</developerConnection>
+		<connection>scm:git:https://github.com/jhy354/ImageX</connection>
+		<developerConnection>scm:git:git@github.com:jhy354/ImageX.git</developerConnection>
 		<tag>HEAD</tag>
-		<url>https://github.com/imagej/ImageJ</url>
+		<url>https://github.com/jhy354/ImageX</url>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/imagej/ImageJ/issues</url>
+		<url>https://github.com/jhy354/ImageX/issues</url>
 	</issueManagement>
 	<ciManagement>
 		<system>GitHub Actions</system>
-		<url>https://github.com/imagej/ImageJ/actions</url>
+		<url>https://github.com/jhy354/ImageX/actions</url>
 	</ciManagement>
 
 	<properties>
@@ -192,7 +185,7 @@
 					-->
 					<source>9</source>
 					<links>
-						<link>https://imagej.net/ij/developer/api/</link>
+						<link>https://github.com/jhy354/ImageX</link>
 					</links>
 					<sourceFileIncludes>ij/**/*.java</sourceFileIncludes>
 				</configuration>

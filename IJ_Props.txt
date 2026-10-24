@@ -1,6 +1,6 @@
- # IJ_Props.txt - This is the ImageJ properties file. ImageJ uses
+ # IJ_Props.txt - This is the ImageX properties file. ImageX uses
 # the information in this file to install plug-ins in menus.
-# ImageJ looks for this file in ij.jar. It can be edited by
+# ImageX looks for this file in ImageX.jar. It can be edited by
 # opening ij.jar with a ZIP utility.
 
 # Note that commands must be unique.
@@ -412,7 +412,7 @@ utilities08="Capture Screen[G]",ij.plugin.ScreenGrabber
 utilities09="Capture Delayed...",ij.plugin.ScreenGrabber("delay")
 utilities10="Capture Image",ij.plugin.ScreenGrabber("image")
 utilities11=-
-utilities12="ImageJ Properties",ij.plugin.JavaProperties
+utilities12="ImageX Properties",ij.plugin.JavaProperties
 utilities13="Threads",ij.plugin.ThreadLister
 utilities14="Benchmark",ij.plugin.Benchmark
 utilities15="Reset...",ij.plugin.SimpleCommands("reset")

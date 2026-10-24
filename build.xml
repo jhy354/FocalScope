@@ -1,9 +1,9 @@
-<!-- Ant makefile for ImageJ -->
+<!-- Ant makefile for ImageX -->
 
-<project name="ImageJ" default="run">
+<project name="ImageX" default="run">
 
   <property name="build.dir" value="build" />
-  <property name="jarfile" value="ij.jar" />
+  <property name="jarfile" value="ImageX.jar" />
   <property name="javadoc.dir" value="../api" />
   <property name="repository" value="https://maven.scijava.org/content/groups/public" />
   <property name="src-tests.dir" value="tests" />
@@ -19,16 +19,18 @@
   </target>
 
 
-  <target name="build" depends="compile" description="Build ij.jar.">
+  <target name="build" depends="compile" description="Build ImageX.jar.">
     <!-- Copy needed files into the build directory. -->
     <copy file="IJ_Props.txt" todir="${build.dir}" />
     <copy file="IJ_zh_CN.properties" todir="${build.dir}" />
+    <copy file="images/ImageX.png" todir="${build.dir}" />
+    <copy file="images/ImageX.ico" todir="${build.dir}" />
     <copy file="images/microscope.gif" tofile="${build.dir}/microscope.gif" />
     <copy file="images/about.jpg" tofile="${build.dir}/about.jpg" />
     <copy file="plugins/MacAdapter.class" tofile="${build.dir}/ij/plugin/MacAdapter.class" />
     <copy file="plugins/MacAdapter9.class" tofile="${build.dir}/ij/plugin/MacAdapter9.class" />
     <copy todir="${build.dir}/macros"><fileset dir="macros"/></copy>
-    <!-- Build ij.jar. -->
+    <!-- Build ImageX.jar. -->
     <jar jarfile="${jarfile}" basedir="${build.dir}"
          manifest="MANIFEST.MF"
          excludes="${src-tests.dir}" />
@@ -41,14 +43,14 @@
   </target>
 
 
-  <target name="run" depends="build" description="Build and run ImageJ.">
+  <target name="run" depends="build" description="Build and run ImageX.">
     <copy file="${jarfile}" toDir=".." />
     <java maxmemory="640m" jar="${jarfile}" fork="yes" />
   </target>
 
 
-  <target name="run2" depends="build" description="Build and run ImageJ.">
-    <!-- Run in ImageJ directory -->
+  <target name="run2" depends="build" description="Build and run ImageX.">
+    <!-- Run in ImageX directory -->
     <copy file="${jarfile}" toDir=".." />
     <java maxmemory="640m" dir=".." jar="${jarfile}" fork="yes" />
   </target>
@@ -74,7 +76,7 @@
            author="true"
            version="true"
            use="true"
-           windowtitle="ImageJ API">
+           windowtitle="ImageX API">
     </javadoc>
   </target>
 

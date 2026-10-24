@@ -163,7 +163,7 @@ public class RoiDecoder {
 			total += is.read(data, total, size-total);
 		is.close();
 		if (getByte(0)!=73 || getByte(1)!=111)  //"Iout"
-			throw new IOException("This is not an ImageJ ROI");
+			throw new IOException("This is not an ImageX ROI");
 		int version = getShort(VERSION_OFFSET);
 		int type = getByte(TYPE);
 		int subtype = getShort(SUBTYPE);
