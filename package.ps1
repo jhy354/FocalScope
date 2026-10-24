@@ -39,6 +39,7 @@ New-Item -ItemType Directory -Path $appDir | Out-Null
 
 Write-Host "==> Copying application files" -ForegroundColor Cyan
 Copy-Item -LiteralPath $jar.FullName -Destination (Join-Path $appDir "ImageX.jar")
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot "lib\flatlaf-3.5.4.jar") -Destination $appDir
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "IJ_Props.txt") -Destination $appDir
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "IJ_zh_CN.properties") -Destination $appDir
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "LICENSE.txt") -Destination $appDir
