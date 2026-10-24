@@ -543,7 +543,7 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 			setInterpolation(offScreenGraphics, Prefs.interpolateScaledImages);
 			Image img = imp.getImage();
 			if (img!=null)
-				offScreenGraphics.drawImage(img, 0, 0, srcRectWidthMag, srcRectHeightMag,
+				offScreenGraphics.drawImage(img, imageX(), imageY(), imageX()+srcRectWidthMag, imageY()+srcRectHeightMag,
 					srcRect.x, srcRect.y, srcRect.x+srcRect.width, srcRect.y+srcRect.height, null);
 			Overlay overlay = imp.getOverlay();
 			if (overlay!=null)
@@ -665,54 +665,64 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 	}
 
 	/**Converts a screen x-coordinate to an offscreen x-coordinate (nearest pixel center).*/
+	private int imageX() {
+		int width = (int)(srcRect.width*magnification+0.5);
+		return width<getWidth() ? (getWidth()-width)/2 : 0;
+	}
+
+	private int imageY() {
+		int height = (int)(srcRect.height*magnification+0.5);
+		return height<getHeight() ? (getHeight()-height)/2 : 0;
+	}
+
 	public int offScreenX(int sx) {
-		return srcRect.x + (int)(sx/magnification);
+		return srcRect.x + (int)((sx-imageX())/magnification);
 	}
 		
 	/**Converts a screen y-coordinate to an offscreen y-coordinate (nearest pixel center).*/
 	public int offScreenY(int sy) {
-		return srcRect.y + (int)(sy/magnification);
+		return srcRect.y + (int)((sy-imageY())/magnification);
 	}
 	
 	/**Converts a screen x-coordinate to an offscreen x-coordinate (Roi coordinate of nearest pixel border).*/
 	public int offScreenX2(int sx) {
-		return srcRect.x + (int)Math.round(sx/magnification);
+		return srcRect.x + (int)Math.round((sx-imageX())/magnification);
 	}
 		
 	/**Converts a screen y-coordinate to an offscreen y-coordinate (Roi coordinate of nearest pixel border).*/
 	public int offScreenY2(int sy) {
-		return srcRect.y + (int)Math.round(sy/magnification);
+		return srcRect.y + (int)Math.round((sy-imageY())/magnification);
 	}
 	
 	/**Converts a screen x-coordinate to a floating-point offscreen x-coordinate.*/
 	public double offScreenXD(int sx) {
-		return srcRect.x + sx/magnification;
+		return srcRect.x + (sx-imageX())/magnification;
 	}
 		
 	/**Converts a screen y-coordinate to a floating-point offscreen y-coordinate.*/
 	public double offScreenYD(int sy) {
-		return srcRect.y + sy/magnification;
+		return srcRect.y + (sy-imageY())/magnification;
 
 	}
 	
 	/**Converts an offscreen x-coordinate to a screen x-coordinate.*/
 	public int screenX(int ox) {
-		return  (int)((ox-srcRect.x)*magnification);
+		return imageX() + (int)((ox-srcRect.x)*magnification);
 	}
 	
 	/**Converts an offscreen y-coordinate to a screen y-coordinate.*/
 	public int screenY(int oy) {
-		return  (int)((oy-srcRect.y)*magnification);
+		return imageY() + (int)((oy-srcRect.y)*magnification);
 	}
 
 	/**Converts a floating-point offscreen x-coordinate to a screen x-coordinate.*/
 	public int screenXD(double ox) {
-		return  (int)((ox-srcRect.x)*magnification);
+		return imageX() + (int)((ox-srcRect.x)*magnification);
 	}
 	
 	/**Converts a floating-point offscreen x-coordinate to a screen x-coordinate.*/
 	public int screenYD(double oy) {
-		return  (int)((oy-srcRect.y)*magnification);
+		return imageY() + (int)((oy-srcRect.y)*magnification);
 	}
 
 	public double getMagnification() {
@@ -744,8 +754,8 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 		int canvasWidth = dstWidth>0 ? dstWidth : getWidth();
 		int canvasHeight = dstHeight>0 ? dstHeight : getHeight();
 		if (canvasWidth<=0 || canvasHeight<=0) return;
-		int ox = srcRect.x + (int)Math.round(sx/oldMag);
-		int oy = srcRect.y + (int)Math.round(sy/oldMag);
+		int ox = srcRect.x + (int)Math.round((sx-imageX())/oldMag);
+		int oy = srcRect.y + (int)Math.round((sy-imageY())/oldMag);
 		int newWidth = (int)Math.round(canvasWidth/newMag);
 		int newHeight = (int)Math.round(canvasHeight/newMag);
 		if (newWidth>=imageWidth && newHeight>=imageHeight) {
