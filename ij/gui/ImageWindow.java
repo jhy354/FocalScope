@@ -718,8 +718,9 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		int oldState = e.getOldState();
 		int newState = e.getNewState();
 		if (IJ.debugMode) IJ.log("windowStateChanged: "+oldState+" "+newState);
-		if ((oldState&Frame.MAXIMIZED_BOTH)==0 && (newState&Frame.MAXIMIZED_BOTH)!=0)
-			maximize();
+		// Let the native window manager handle maximize/restore. Calling
+		// setBounds() here overwrites the normal bounds, so restoring would
+		// return to the maximized size instead of the previous size.
 	}
 
 	public void windowClosed(WindowEvent e) {}
