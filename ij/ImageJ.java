@@ -391,7 +391,9 @@ public class ImageJ extends Frame implements ActionListener,
 	public void itemStateChanged(ItemEvent e) {
 		MenuItem item = (MenuItem)e.getSource();
 		MenuComponent parent = (MenuComponent)item.getParent();
-		String cmd = e.getItem().toString();
+		String cmd = item.getActionCommand();
+		if (cmd==null || cmd.length()==0)
+			cmd = e.getItem().toString();
 		if ("Autorun Examples".equals(cmd)) // Examples>Autorun Examples
 			Prefs.autoRunExamples = e.getStateChange()==1;
 		else if ((Menu)parent==Menus.window)

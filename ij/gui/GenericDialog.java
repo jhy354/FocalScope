@@ -103,11 +103,11 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 
 	/** Creates a new GenericDialog using the specified title and parent frame. */
 	public GenericDialog(String title, Frame parent) {
-		super(parent, title, true);
+		super(parent, I18n.label(title), true);
 		ImageJ ij = IJ.getInstance();
 		if (ij!=null) setFont(ij.getFont());
-		okay = new Button("  OK  ");
-		cancel = new Button("Cancel");
+		okay = new Button(I18n.label("OK"));
+		cancel = new Button(I18n.label("Cancel"));
 		if (Prefs.blackCanvas) {
 			setForeground(SystemColor.controlText);
 			setBackground(SystemColor.control);
@@ -156,6 +156,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		String label2 = label;
 		if (label2.indexOf('_')!=-1)
 			label2 = label2.replace('_', ' ');
+		label2 = I18n.label(label2);
 		Label fieldLabel = makeLabel(label2);
 		this.lastLabelAdded = fieldLabel;
 		if (addToSameRow) {
@@ -268,6 +269,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		String label2 = label;
 		if (label2.indexOf('_')!=-1)
 			label2 = label2.replace('_', ' ');
+		label2 = I18n.label(label2);
 		Label fieldLabel = makeLabel(label2);
 		this.lastLabelAdded = fieldLabel;
 		boolean custom = customInsets;
@@ -543,6 +545,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		String label2 = label;
 		if (label2.indexOf('_')!=-1)
 			label2 = label2.replace('_', ' ');
+		label2 = I18n.label(label2);
 		if (addToSameRow) {
 			c.gridx = GridBagConstraints.RELATIVE;
 			c.insets.left = 10;
@@ -737,6 +740,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		String label2 = label;
 		if (label2.indexOf('_')!=-1)
 			label2 = label2.replace('_', ' ');
+		label2 = I18n.label(label2);
 		Label fieldLabel = makeLabel(label2);
 		this.lastLabelAdded = fieldLabel;
 		if (addToSameRow) {
@@ -790,6 +794,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		which will be displayed using the specified font and color. */
 	public void addMessage(String text, Font font, Color color) {
 		theLabel = null;
+		text = I18n.label(text);
 		if (text.indexOf('\n')>=0)
 			theLabel = new MultiLineLabel(text);
 		else

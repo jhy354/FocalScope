@@ -116,6 +116,7 @@
 				<directory>${project.basedir}</directory>
 				<includes>
 					<include>IJ_Props.txt</include>
+					<include>IJ_zh_CN.properties</include>
 				</includes>
 			</resource>
 			<resource>
