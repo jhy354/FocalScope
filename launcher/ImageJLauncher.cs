@@ -31,6 +31,27 @@ internal static class ImageJLauncher
             arguments += " \"" + arg.Replace("\"", "\\\"") + "\"";
         }
 
+        // ImageJ keeps an RMI stub in %TEMP%. A stale stub (left behind by a
+        // forced shutdown) makes the next launch wait for the RMI connect
+        // timeout, which can take about five seconds. Remove it only when no
+        // ImageJ window is running; otherwise the existing instance is used.
+        if (!IsImageJRunning())
+        {
+            try
+            {
+                string stub = GetStubPath();
+                if (File.Exists(stub))
+                {
+                    File.SetAttributes(stub, FileAttributes.Normal);
+                    File.Delete(stub);
+                }
+            }
+            catch (Exception)
+            {
+                // Ignore: the normal single-instance check will handle it.
+            }
+        }
+
         ProcessStartInfo info = new ProcessStartInfo();
         info.FileName = java;
         info.Arguments = arguments;
@@ -47,5 +68,38 @@ internal static class ImageJLauncher
             MessageBox.Show("Could not start ImageJ:\n" + ex.Message,
                 "ImageJ", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+    }
+
+    private static string GetStubPath()
+    {
+        return Path.Combine(Path.GetTempPath(),
+            "ImageJ-" + Environment.UserName + "-57294.stub");
+    }
+
+    private static bool IsImageJRunning()
+    {
+        string[] names = { "javaw", "java" };
+        foreach (string name in names)
+        {
+            try
+            {
+                foreach (Process p in Process.GetProcessesByName(name))
+                {
+                    try
+                    {
+                        if (p.MainWindowTitle == "ImageJ") return true;
+                    }
+                    catch (Exception)
+                    {
+                        // The process may have exited while it was inspected.
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Ignore and assume no other instance is running.
+            }
+        }
+        return false;
     }
 }
