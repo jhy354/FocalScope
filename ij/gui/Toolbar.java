@@ -1436,12 +1436,15 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 		for (int i=0; i<n; ++i) {
 			MenuItem m = toolsMenu.getItem(i);
 			String label = m.getLabel();
-			if (label!=null && (label.endsWith(" Tool")||label.endsWith(" Menu"))) {
+			String action = m.getActionCommand();
+			String name = action!=null && action.length()>0 ? action : label;
+			if (label!=null && (label.endsWith(" Tool")||label.endsWith(" Menu")
+				||name.endsWith(" Tool")||name.endsWith(" Menu"))) {
 				if (!separatorAdded) {
 					switchPopup.addSeparator();
 					separatorAdded = true;
 				}
-				addPluginTool(label);
+				addPluginTool(name);
 			}
 		}
 		switchPopup.addSeparator();
@@ -1458,22 +1461,23 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 	}
 
     private void addBuiltInTool(String name) {
-		CheckboxMenuItem item = new CheckboxMenuItem(name, name.equals(currentSet));
+		CheckboxMenuItem item = new CheckboxMenuItem(I18n.label(name), name.equals(currentSet));
 		item.addItemListener(this);
-		item.setActionCommand("Tool");
+		item.setActionCommand("Tool|"+name);
 		switchPopup.add(item);
     }
 
     private void addPluginTool(String name) {
-		CheckboxMenuItem item = new CheckboxMenuItem(name, name.equals(currentSet));
+		CheckboxMenuItem item = new CheckboxMenuItem(I18n.label(name), name.equals(currentSet));
 		item.addItemListener(this);
-		item.setActionCommand("Plugin Tool");
+		item.setActionCommand("Plugin Tool|"+name);
 		switchPopup.add(item);
     }
 
     private void addItem(String name) {
-		CheckboxMenuItem item = new CheckboxMenuItem(name, name.equals(currentSet));
+		CheckboxMenuItem item = new CheckboxMenuItem(I18n.label(name), name.equals(currentSet));
 		item.addItemListener(this);
+		item.setActionCommand("Item|"+name);
 		switchPopup.add(item);
     }
 
@@ -1566,25 +1570,30 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 			setTool2(LINE);
 			showMessage(LINE);
 		} else {
-			String label = item.getLabel();
 			String cmd = item.getActionCommand();
-			boolean isTool = cmd.equals("Tool") || cmd.equals("Plugin Tool");
-			if (!(label.equals("Help...")||label.equals("Remove Custom Tools")) && !isTool && !label.endsWith("Tool") && !label.endsWith("Tool "))
-				currentSet = label;
-			if (isTool) {
-				if (cmd.equals("Tool")) // built in tool
-					installBuiltinTool(label);
-				else  // plugin or macro tool in ImageJ/plugins/Tools
-					IJ.run(label);
+			String label = item.getLabel();
+			String name;
+			if (cmd!=null && cmd.startsWith("Tool|")) {
+				installBuiltinTool(cmd.substring(5));
 				return;
 			}
+			if (cmd!=null && cmd.startsWith("Plugin Tool|")) {
+				IJ.run(cmd.substring(12));
+				return;
+			}
+			if (cmd!=null && cmd.startsWith("Item|"))
+				name = cmd.substring(5);
+			else
+				name = label;
+			if (!(name.equals("Help...")||name.equals("Remove Custom Tools")) && !name.endsWith("Tool") && !name.endsWith("Tool "))
+				currentSet = name;
 			String path;
-			if (label.equals("Remove Custom Tools")) {
+			if (name.equals("Remove Custom Tools")) {
 				removeTools();
-			} else if (label.equals("Restore Startup Tools")) {
+			} else if (name.equals("Restore Startup Tools")) {
 				removeTools();
 				installStartupMacros();
-			} else if (label.equals("Help...")) {
+			} else if (name.equals("Help...")) {
 				IJ.showMessage("Tool Switcher and Loader",
 					"Use this drop down menu to switch to alternative\n"+
 					"macro toolsets or to load additional plugin tools.\n"+
@@ -1604,26 +1613,26 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 					"  <"+IJ.URL2+"/plugins/>\n"
 					);
 				return;
-			} else if (label.endsWith("*")) {
+			} else if (name.endsWith("*")) {
                 // load from ij.jar
                 MacroInstaller mi = new MacroInstaller();
-                label = label.substring(0, label.length()-1) + ".txt";
-                path = "/macros/"+label;
+                name = name.substring(0, name.length()-1) + ".txt";
+                path = "/macros/"+name;
                 if (IJ.shiftKeyDown())
-				    showCode(label, mi.openFromIJJar(path));
+				    showCode(name, mi.openFromIJJar(path));
 				else {
 				    resetTools();
 				    mi.installFromIJJar(path);
                 }
             } else {
                 // load from ImageJ/macros/toolsets
-                if (label.equals("Startup Macros")) {
+                if (name.equals("Startup Macros")) {
                 	installStartupMacros();
                 	return;
-                } else if (label.endsWith(" "))
-                    path = IJ.getDir("macros")+"toolsets"+File.separator+label.substring(0, label.length()-1)+".ijm";
+                } else if (name.endsWith(" "))
+                    path = IJ.getDir("macros")+"toolsets"+File.separator+name.substring(0, name.length()-1)+".ijm";
                 else
-                    path = IJ.getDir("macros")+"toolsets"+File.separator+label+".txt";
+                    path = IJ.getDir("macros")+"toolsets"+File.separator+name+".txt";
                 try {
                     if (IJ.shiftKeyDown()) {
                         IJ.open(path);

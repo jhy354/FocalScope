@@ -2461,11 +2461,14 @@ public class IJ {
 		for (int i=0; i<lutsMenu.getItemCount(); i++) {
 			MenuItem menuItem = lutsMenu.getItem(i);
 			String label = menuItem.getLabel();
-			if (label.equals("-") || label.equals("Invert LUT") || label.equals("Apply LUT"))
+			String action = menuItem.getActionCommand();
+			String name = action!=null && action.length()>0 ? action : label;
+			if (name.equals("-") || name.equals("Invert LUT") || name.equals("Apply LUT")
+				|| label.equals("-") || label.equals("Invert LUT") || label.equals("Apply LUT"))
 				continue;
 			String command = (String)commands.get(label);
 			if (command==null || command.startsWith("ij.plugin.LutLoader"))
-				list.add(label);
+				list.add(name);
 		}
 		return (String[])list.toArray(new String[list.size()]);
 	}
