@@ -78,7 +78,7 @@ public class ImageJ extends Frame implements ActionListener,
 	MouseListener, KeyListener, WindowListener, ItemListener, Runnable {
 
 	/** Plugins should call IJ.getVersion() or IJ.getFullVersion() to get the version string. */
-	public static final String VERSION = "2.0";
+	public static final String VERSION = "2.0.1";
 	public static final String BUILD = "";
 	public static Color backgroundColor = new Color(237,237,237);
 	/** SansSerif, 12-point, plain font. */
@@ -170,6 +170,7 @@ public class ImageJ extends Frame implements ActionListener,
 		toolbar.addKeyListener(this);
 		toolbarHost = new Panel(new BorderLayout());
 		toolbarHost.add(toolbar, BorderLayout.CENTER);
+		toolbarHost.setVisible(false);
 		add("Center", toolbarHost);
 
 		// Status bar
@@ -221,6 +222,10 @@ public class ImageJ extends Frame implements ActionListener,
 						setLocation(loc.x, loc.y);
 				}
 			}
+		}
+		if (mode!=NO_SHOW) {
+			setSize(1000, 700);
+			setLocationRelativeTo(null);
 		}
 		if (err1!=null)
 			IJ.error(err1);
@@ -677,6 +682,10 @@ public class ImageJ extends Frame implements ActionListener,
 	}
 
 	public void windowClosing(WindowEvent e) {
+		if (WindowManager.getImageCount()==0) {
+			exitAfterLastImage();
+			return;
+		}
 		if (Executer.getListenerCount()>0)
 			doCommand("Quit");
 		else {
@@ -717,6 +726,19 @@ public class ImageJ extends Frame implements ActionListener,
 		thread.setPriority(Thread.NORM_PRIORITY);
 		thread.start();
 		IJ.wait(10);
+	}
+
+	/** Exits immediately when the last image window has been closed. */
+	public void exitAfterLastImage() {
+		if (quitting) return;
+		quitting = true;
+		if (applet==null) {
+			saveWindowLocations();
+			Prefs.savePreferences();
+		}
+		IJ.cleanup();
+		dispose();
+		System.exit(0);
 	}
 	
 	/** Returns true if ImageJ is exiting. */

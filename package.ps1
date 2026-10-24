@@ -1,9 +1,9 @@
 # Build ImageX and create a portable Windows package with a bundled JRE.
 # Usage:
 #   .\package.ps1
-#   .\package.ps1 -Version "1.54u9-zh"
+#   .\package.ps1 -Version "2.0.1"
 param(
-    [string]$Version = "2.0"
+    [string]$Version = "2.0.1"
 )
 
 $ErrorActionPreference = "Stop"

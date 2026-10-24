@@ -508,7 +508,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
         pack();
 		repaint();
 		maxBounds = getMaximumBounds();
-		setMaximizedBounds(maxBounds);
+		setMaximizedBounds(GUI.getMaxWindowBounds(this));
 		setMaxBoundsTime = System.currentTimeMillis();
 	}
 
@@ -549,6 +549,11 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		ImageJ main = IJ.getInstance();
 		if (main==null)
 			return;
+		if (WindowManager.getImageCount()==0) {
+			if (!IJ.isMacro() && !Interpreter.isBatchMode())
+				main.exitAfterLastImage();
+			return;
+		}
 		Toolbar tb = Toolbar.getInstance();
 		if (tb!=null && isDescendant(tb, this)) {
 			Container parent = tb.getParent();
@@ -645,7 +650,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	public Component add(Component comp) {
 		comp = super.add(comp);
 		maxBounds = getMaximumBounds();
-		setMaximizedBounds(maxBounds);
+		setMaximizedBounds(GUI.getMaxWindowBounds(this));
 		setMaxBoundsTime = System.currentTimeMillis();
 		return comp;
 	}
@@ -653,9 +658,12 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	public void maximize() {
 		if (GenericDialog.getInstance()!=null && IJ.isMacOSX() && IJ.isJava18())
 			return; // workaround for OSX/Java 8 maximize bug 
-		Rectangle rect = getMaximumBounds();
+		Rectangle rect = GUI.getMaxWindowBounds(this);
 		if (IJ.debugMode) IJ.log("maximize: "+rect);
-		setLocationAndSize(rect.x, rect.y, rect.width, rect.height);
+		setMaximizedBounds(rect);
+		setBounds(rect);
+		if (ic!=null) ic.fitToWindow();
+		validate();
 	}
 	
 	public void minimize() {
