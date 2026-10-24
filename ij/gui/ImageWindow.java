@@ -104,8 +104,8 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		statusLabel.setFont(UITheme.font(Font.PLAIN, 12));
 		statusLabel.setBackground(UITheme.STATUS);
 		statusLabel.setForeground(UITheme.MUTED);
-		statusLabel.setText(imp.getTitle()+"  "+imp.getWidth()+"x"+imp.getHeight());
 		add(statusLabel, BorderLayout.SOUTH);
+		setStatusText(null);
 		addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent event) {
 				fillCanvas = (getExtendedState()&Frame.MAXIMIZED_BOTH)!=0;
@@ -534,8 +534,18 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	}
 
 	public void setStatusText(String text) {
-		if (statusLabel!=null)
-			statusLabel.setText(text!=null?text:" ");
+		if (statusLabel==null)
+			return;
+		if (text==null || text.trim().length()==0)
+			statusLabel.setText(defaultStatusText());
+		else
+			statusLabel.setText(text);
+	}
+
+	private String defaultStatusText() {
+		if (imp==null)
+			return " ";
+		return "  " + imp.getTitle() + "  " + imp.getWidth() + " x " + imp.getHeight();
 	}
 
 	private void fitCanvasLater() {
