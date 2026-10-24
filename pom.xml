@@ -11,7 +11,7 @@
 
 	<groupId>com.github.jhy354</groupId>
 	<artifactId>imagex</artifactId>
-	<version>2.0.2</version>
+	<version>2.0.3</version>
 
 	<name>ImageX</name>
 	<description>ImageX is a modernized, Chinese-localized build based on ImageJ1.</description>

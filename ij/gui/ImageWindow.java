@@ -99,6 +99,11 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		canvasPanel = new Panel(new ImageLayout(ic));
 		canvasPanel.add(ic);
 		add(canvasPanel, BorderLayout.CENTER);
+		addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent event) {
+				fitCanvasLater();
+			}
+		});
  		addFocusListener(this);
  		addWindowListener(this);
  		addWindowStateListener(this);
@@ -520,6 +525,22 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		return canvasPanel;
 	}
 
+	private void fitCanvasLater() {
+		new Thread(new Runnable() {
+			public void run() {
+				IJ.wait(300);
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (ic!=null && isShowing()) {
+							ic.fitToWindow();
+							validate();
+						}
+					}
+				});
+			}
+		}).start();
+	}
+
 	private void installImageXChrome() {
 		if (this instanceof PlotWindow || this instanceof HistogramWindow)
 			return;
@@ -718,9 +739,23 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		int oldState = e.getOldState();
 		int newState = e.getNewState();
 		if (IJ.debugMode) IJ.log("windowStateChanged: "+oldState+" "+newState);
-		// Let the native window manager handle maximize/restore. Calling
-		// setBounds() here overwrites the normal bounds, so restoring would
-		// return to the maximized size instead of the previous size.
+		// Native maximize/restore changes the window bounds asynchronously.
+		// Refit the canvas after the new bounds have been applied.
+		if (!IJ.isMacro()) {
+			new Thread(new Runnable() {
+				public void run() {
+					IJ.wait(200);
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							if (ic!=null && isShowing()) {
+								ic.fitToWindow();
+								validate();
+							}
+						}
+					});
+				}
+			}).start();
+		}
 	}
 
 	public void windowClosed(WindowEvent e) {}

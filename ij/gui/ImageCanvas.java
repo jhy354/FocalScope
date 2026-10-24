@@ -216,6 +216,9 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 	
     public void paint(Graphics g) {
 		painted = true;
+		Color background = getBackground();
+		g.setColor(background!=null?background:Color.white);
+		g.fillRect(0, 0, getWidth(), getHeight());
 		Roi roi = imp.getRoi();
 		Overlay overlay = imp.getOverlay();
 		if (roi!=null || overlay!=null || showAllOverlay!=null || Prefs.paintDoubleBuffered || (IJ.isLinux() && magnification<0.25)) {
@@ -822,11 +825,12 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 	public void fitToWindow() {
 		ImageWindow win = imp.getWindow();
 		if (win==null) return;
-		Rectangle bounds = win.getBounds();
-		Insets insets = win.getInsets(false); // do not include small window padding
+		Container parent = getParent();
+		int availableWidth = parent!=null?parent.getWidth():win.getWidth();
+		int availableHeight = parent!=null?parent.getHeight():win.getHeight();
 		int sliderHeight = win.getSliderHeight();
-		double xmag = (double)(bounds.width-(insets.left+insets.right+ImageWindow.HGAP*2))/srcRect.width;
-		double ymag = (double)(bounds.height-(ImageWindow.VGAP*2+insets.top+insets.bottom+sliderHeight))/srcRect.height;
+		double xmag = (double)(availableWidth-(ImageWindow.HGAP*2))/imageWidth;
+		double ymag = (double)(availableHeight-(ImageWindow.VGAP*2+sliderHeight))/imageHeight;
 		setMagnification(Math.min(xmag, ymag));
 		int width=(int)(imageWidth*magnification);
 		int height=(int)(imageHeight*magnification);
