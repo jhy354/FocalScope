@@ -78,7 +78,7 @@ public class ImageJ extends Frame implements ActionListener,
 	MouseListener, KeyListener, WindowListener, ItemListener, Runnable {
 
 	/** Plugins should call IJ.getVersion() or IJ.getFullVersion() to get the version string. */
-	public static final String VERSION = "2.1.0";
+	public static final String VERSION = "2.1.1";
 	public static final String BUILD = "";
 	public static Color backgroundColor = UITheme.BACKGROUND;
 	/** SansSerif, 12-point, plain font. */

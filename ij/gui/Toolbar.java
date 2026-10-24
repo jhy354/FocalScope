@@ -57,7 +57,7 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 	private static final int NUM_TOOLS = 23;
 	private static final int MAX_EXTRA_TOOLS = 8;
 	private static final int MAX_TOOLS = NUM_TOOLS+MAX_EXTRA_TOOLS;
-	private static final int NUM_BUTTONS = 21;
+	private static final int NUM_BUTTONS = 20;
 	private static final int BUTTON_WIDTH = 30;
 	private static final int BUTTON_HEIGHT = 31;
 	private static final int SIZE = 28;  // no longer used
@@ -320,6 +320,7 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 
 	private void drawButton(Graphics g, int tool) {
 		if (g==null) return;
+		if (tool==MAGNIFIER) return; // Wheel zoom replaces the magnifying glass.
 		if (legacyMode) {
 			if (tool==UNUSED)
 				tool = CUSTOM1;
@@ -837,7 +838,7 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 			case WAND: return "wand";
 			case TEXT: return "text";
 			case HAND: return "hand";
-			case MAGNIFIER: return "zoom";
+			case MAGNIFIER: return "hand";
 			case DROPPER: return "dropper";
 			default: return null;
 		}
@@ -845,6 +846,8 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 	}
 	
 	public void setTool(int tool) {
+		if (tool==MAGNIFIER)
+			tool = HAND; // The magnifying glass was replaced by wheel zoom.
 		if (tool==UNUSED)  //  "Unused" (blank) tool replaced with gap in 1.48h
 			tool = CUSTOM1;
 		else if (legacyMode && tool>=CUSTOM1)
@@ -1088,18 +1091,18 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 			case POINT: return 6;
 			case WAND: return 7;
 			case TEXT: return 8;
-			case MAGNIFIER: return 9;
-			case HAND: return 10;
-			case DROPPER: return 11;
+			case MAGNIFIER: return -1;
+			case HAND: return 9;
+			case DROPPER: return 10;
 			case ANGLE: return 5;
-			case UNUSED: return 12;
-			default: return tool - 2;
+			case UNUSED: return 11;
+			default: return tool - 3;
 		}
     }
 
 	// Returns the tool corresponding to the specified x coordinate
 	private int toolID(int x) {
-		if (x>buttonWidth*12+gapSize)
+		if (x>buttonWidth*11+gapSize)
 			x -= gapSize;
 		int index = x/buttonWidth;
     	switch (index) {
@@ -1112,15 +1115,14 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 			case 6: return POINT;
 			case 7: return WAND;
 			case 8: return TEXT;
-			case 9: return MAGNIFIER;
-			case 10: return HAND;
-			case 11: return DROPPER;
+			case 9: return HAND;
+			case 10: return DROPPER;
 			default: return index + 3;
 		}
     }
     
 	private boolean inGap(int x) {
-		return x>=(buttonWidth*12) && x<(buttonWidth*12+gapSize);
+		return x>=(buttonWidth*11) && x<(buttonWidth*11+gapSize);
  	}
 
 	public void triggerPopupMenu(int newTool, MouseEvent e, boolean isRightClick, boolean isLongPress) {

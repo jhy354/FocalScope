@@ -1,4 +1,4 @@
 Main-Class: ij.ImageJ
 Class-Path: flatlaf-3.5.4.jar
 Implementation-Title: FocalScope
-Implementation-Version: 2.1.0
+Implementation-Version: 2.1.1

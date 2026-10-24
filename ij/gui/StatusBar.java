@@ -10,14 +10,14 @@ import java.awt.Graphics;
 public class StatusBar extends Canvas {
 
 	private static final long serialVersionUID = 1L;
-	private static final int HEIGHT = 22;
+	private static final int HEIGHT = 24;
 	private static final int PADDING = 8;
 
 	private String text = " ";
 
 	public StatusBar() {
 		setBackground(UITheme.STATUS);
-		setForeground(UITheme.MUTED);
+		setForeground(UITheme.TEXT);
 		setFont(UITheme.font(Font.PLAIN, 12));
 	}
 
@@ -45,7 +45,7 @@ public class StatusBar extends Canvas {
 		g.fillRect(0, 0, width, height);
 		g.setColor(UITheme.BORDER);
 		g.drawLine(0, 0, width, 0);
-		g.setColor(UITheme.MUTED);
+		g.setColor(UITheme.TEXT);
 		g.setFont(getFont());
 		FontMetrics metrics = g.getFontMetrics();
 		int baseline = (height+metrics.getAscent()-metrics.getDescent())/2;
