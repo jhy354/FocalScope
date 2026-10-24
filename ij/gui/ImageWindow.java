@@ -36,7 +36,8 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	private int sliderHeight;
 	private Panel toolbarPanel;
 	private Panel canvasPanel;
-
+	private Label statusLabel;
+	boolean fillCanvas;
 	private static final int XINC = 12;
 	private static final int YINC = 16;
 	private final double SCALE = Prefs.getGuiScale();
@@ -99,8 +100,14 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		canvasPanel = new Panel(new ImageLayout(ic));
 		canvasPanel.add(ic);
 		add(canvasPanel, BorderLayout.CENTER);
+		statusLabel = new Label(" ");
+		statusLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		statusLabel.setBackground(ImageJ.backgroundColor);
+		statusLabel.setText(imp.getTitle()+"  "+imp.getWidth()+"x"+imp.getHeight());
+		add(statusLabel, BorderLayout.SOUTH);
 		addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent event) {
+				fillCanvas = (getExtendedState()&Frame.MAXIMIZED_BOTH)!=0;
 				fitCanvasLater();
 			}
 		});
@@ -525,6 +532,11 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		return canvasPanel;
 	}
 
+	public void setStatusText(String text) {
+		if (statusLabel!=null)
+			statusLabel.setText(text!=null?text:" ");
+	}
+
 	private void fitCanvasLater() {
 		new Thread(new Runnable() {
 			public void run() {
@@ -739,6 +751,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		int oldState = e.getOldState();
 		int newState = e.getNewState();
 		if (IJ.debugMode) IJ.log("windowStateChanged: "+oldState+" "+newState);
+		fillCanvas = (newState&Frame.MAXIMIZED_BOTH)!=0;
 		// Native maximize/restore changes the window bounds asynchronously.
 		// Refit the canvas after the new bounds have been applied.
 		if (!IJ.isMacro()) {

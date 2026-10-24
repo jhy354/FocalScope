@@ -748,12 +748,14 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 		int oy = srcRect.y + (int)Math.round(sy/oldMag);
 		int newWidth = (int)Math.round(canvasWidth/newMag);
 		int newHeight = (int)Math.round(canvasHeight/newMag);
-		if (newWidth>=imageWidth || newHeight>=imageHeight) {
+		if (newWidth>=imageWidth && newHeight>=imageHeight) {
 			newMag = Math.min((double)canvasWidth/imageWidth,
 				(double)canvasHeight/imageHeight);
 			newWidth = imageWidth;
 			newHeight = imageHeight;
 		}
+		if (newWidth>imageWidth) newWidth = imageWidth;
+		if (newHeight>imageHeight) newHeight = imageHeight;
 		if (newWidth<1) newWidth = 1;
 		if (newHeight<1) newHeight = 1;
 		int newX = ox - (int)Math.round(sx/newMag);
@@ -787,15 +789,18 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 			fitToWindow();
 			return;
 		}
-		if (width>imageWidth*magnification)
-			width = (int)(imageWidth*magnification);
-		if (height>imageHeight*magnification)
-			height = (int)(imageHeight*magnification);
+		boolean fill = win!=null && win.fillCanvas;
+		if (!fill) {
+			if (width>imageWidth*magnification)
+				width = (int)(imageWidth*magnification);
+			if (height>imageHeight*magnification)
+				height = (int)(imageHeight*magnification);
+		}
 		Dimension size = getSize();
 		if (srcRect.width<imageWidth || srcRect.height<imageHeight || (painted&&(width!=size.width||height!=size.height))) {
 			setSize(width, height);
-			srcRect.width = (int)(dstWidth/magnification);
-			srcRect.height = (int)(dstHeight/magnification);
+			srcRect.width = Math.min(imageWidth, (int)(dstWidth/magnification));
+			srcRect.height = Math.min(imageHeight, (int)(dstHeight/magnification));
 			if ((srcRect.x+srcRect.width)>imageWidth)
 				srcRect.x = imageWidth-srcRect.width;
 			if ((srcRect.y+srcRect.height)>imageHeight)

@@ -85,7 +85,7 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 	 * @see #getRoiManager
 	*/
 	public RoiManager() {
-		super("ROI Manager");
+		super(I18n.label("ROI Manager"));
 		if (instance!=null) {
 			WindowManager.toFront(instance);
 			return;
@@ -104,7 +104,7 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 
 	/** Constructs an ROI Manager without displaying it. The boolean argument is ignored. */
 	public RoiManager(boolean b) {
-		super("ROI Manager");
+		super(I18n.label("ROI Manager"));
 		list = new JList();
 		listModel = new DefaultListModel();
 		list.setModel(listModel);
@@ -142,6 +142,8 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 		addButton("Properties...");
 		addButton("Flatten [F]");
 		addButton(moreButtonLabel);
+		showAllCheckbox.setLabel(I18n.label("Show All"));
+		labelsCheckbox.setLabel(I18n.label("Labels"));
 		showAllCheckbox.addItemListener(this);
 		panel.add(showAllCheckbox);
 		labelsCheckbox.addItemListener(this);
@@ -163,7 +165,8 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 	}
 
 	void addButton(String label) {
-		Button b = new Button(label);
+		Button b = new Button(I18n.label(label));
+		b.setActionCommand(label);
 		b.addActionListener(this);
 		b.addKeyListener(IJ.getInstance());
 		b.addMouseListener(this);
@@ -202,7 +205,8 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 	}
 
 	void addPopupItem(String s) {
-		MenuItem mi=new MenuItem(s);
+		MenuItem mi=new MenuItem(I18n.label(s));
+		mi.setActionCommand(s);
 		mi.addActionListener(this);
 		pm.add(mi);
 	}
@@ -1959,7 +1963,8 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 	Panel makeButtonPanel(GenericDialog gd) {
 		Panel panel = new Panel();
 		//buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
-		colorButton = new Button("\"Show All\" Color...");
+		colorButton = new Button(I18n.label("\"Show All\" Color..."));
+		colorButton.setActionCommand("\"Show All\" Color...");
 		colorButton.addActionListener(this);
 		panel.add(colorButton);
 		return panel;
