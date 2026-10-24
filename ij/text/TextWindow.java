@@ -130,6 +130,17 @@ public class TextWindow extends Frame implements ActionListener, FocusListener, 
 				GUI.centerOnImageJScreen(this);
 		}
 		show();
+		if (isResultsTable) {
+			toFront();
+			requestFocus();
+			final TextWindow resultsWindow = this;
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					resultsWindow.toFront();
+					resultsWindow.requestFocus();
+				}
+			});
+		}
 		WindowManager.setWindow(this);
 	}
 
@@ -313,7 +324,7 @@ public class TextWindow extends Frame implements ActionListener, FocusListener, 
 	/** Closes this TextWindow. Display a "save changes" dialog
 		if this is the "Results" window and 'showDialog' is true. */
 	public void close(boolean showDialog) {
-		if (getTitle().equals("Results")) {
+		if (isResultsTable) {
 			if (showDialog && !Analyzer.resetCounter())
 				return;
 			IJ.setTextPanel(null);
@@ -349,7 +360,7 @@ public class TextWindow extends Frame implements ActionListener, FocusListener, 
 		if (!textPanel.unsavedLines) lineCount = 0;
 		ImageJ ij = IJ.getInstance();
 		boolean macro = IJ.macroRunning() || Interpreter.isBatchMode();
-		boolean isResults = getTitle().contains("Results");
+		boolean isResults = isResultsTable;
 		if (lineCount>0 && !macro && ij!=null && !ij.quitting() && isResults) {
 			YesNoCancelDialog d = new YesNoCancelDialog(this, getTitle(), "Save "+lineCount+" measurements?");
 			if (d.cancelPressed())

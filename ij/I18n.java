@@ -92,6 +92,9 @@ public final class I18n {
 
 	private static void translateFrameTitle(final Frame frame) {
 		String title = frame.getTitle();
+		// Results/Log/Debug are also used as internal window identifiers.
+		if ("Results".equals(title) || "Log".equals(title) || "Debug".equals(title))
+			return;
 		String translated = label(title);
 		if (translated!=null && !translated.equals(title))
 			frame.setTitle(translated);
