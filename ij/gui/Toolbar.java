@@ -14,6 +14,7 @@ import ij.*;
 import ij.plugin.frame.*;
 import ij.plugin.MacroInstaller;
 import ij.plugin.RectToolOptions;
+import ij.plugin.ROILabeler;
 import ij.plugin.tool.PlugInTool;
 import ij.plugin.tool.MacroToolRunner;
 import ij.macro.Program;
@@ -32,7 +33,9 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 	public static final int WAND = 8;
 	public static final int TEXT = 9;
 	public static final int UNUSED = 10;
-	public static final int MAGNIFIER = 11;
+	public static final int ROI_MANAGER = 11;
+	/** @deprecated The magnifying glass was replaced by wheel zoom and the ROI Manager button. */
+	public static final int MAGNIFIER = ROI_MANAGER;
 	public static final int HAND = 12;
 	public static final int DROPPER = 13;
 	public static final int ANGLE = 14;
@@ -43,6 +46,8 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 	public static final int CUSTOM5 = 19;
 	public static final int CUSTOM6 = 20;
 	public static final int CUSTOM7 = 21;
+	public static final int ROI_LABEL = 22;
+	private static final int MORE_TOOLS = 23;
 	
 	public static final int DOUBLE_CLICK_THRESHOLD = 650; //ms
 
@@ -54,10 +59,10 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 		"Spray Can","Stacks Menu","ROI Menu"};
 	private static final String[] builtInTools2 = {"Pixel Inspection Tool","Paintbrush Tool","Flood Fill Tool"};
 
-	private static final int NUM_TOOLS = 23;
+	private static final int NUM_TOOLS = 24;
 	private static final int MAX_EXTRA_TOOLS = 8;
 	private static final int MAX_TOOLS = NUM_TOOLS+MAX_EXTRA_TOOLS;
-	private static final int NUM_BUTTONS = 20;
+	private static final int NUM_BUTTONS = 22;
 	private static final int BUTTON_WIDTH = 30;
 	private static final int BUTTON_HEIGHT = 31;
 	private static final int SIZE = 28;  // no longer used
@@ -318,9 +323,12 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 		g2.drawRoundRect(x+1, y+1, width-2, height-2, 7, 7);
 	}    
 
+	private boolean isCustomButton(int tool) {
+		return (tool>=CUSTOM1 && tool<=CUSTOM7) || tool==MORE_TOOLS;
+	}
+
 	private void drawButton(Graphics g, int tool) {
 		if (g==null) return;
-		if (tool==MAGNIFIER) return; // Wheel zoom replaces the magnifying glass.
 		if (legacyMode) {
 			if (tool==UNUSED)
 				tool = CUSTOM1;
@@ -331,20 +339,20 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 		}
         int index = toolIndex(tool);
         int x = index*buttonWidth + 1*scale;
-        if (tool>=CUSTOM1)
+        if (isCustomButton(tool))
         	x -= buttonWidth-gapSize;
         if (tool!=UNUSED)
         	fill3DRect(g, x, 1, buttonWidth, buttonHeight-1, !down[tool]);
         g.setColor(toolColor);
         x = index*buttonWidth + offset;
-        if (tool>=CUSTOM1)
+        if (isCustomButton(tool))
         	x -= buttonWidth-gapSize;
 		int y = offset;
 		if (dscale==1.3) {x++; y++;}
 		if (dscale==1.4) {x+=2; y+=2;}
 		if (down[tool]) { x++; y++;}
 		this.g = g;
-		if (tool>=CUSTOM1 && tool<=getNumTools() && icons[tool]!=null) {
+		if (isCustomButton(tool) && icons[tool]!=null) {
 			drawIcon(g, tool, x+1*scale, y+1*scale);
 			return;
 		}
@@ -431,11 +439,20 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 				m(15,16); d(17,16);
 				m(4,10); d(13,10);
 				return; 
-			case MAGNIFIER:
+			case ROI_MANAGER:
 				xOffset = x; yOffset = y;
-				g.drawOval(x+3, y, 13*scale, 13*scale);
-				m(5,12); d(-1,18);
-				drawTriangle(15,17);
+				g.drawRect(x+1, y+2, 16*scale, 10*scale);
+				g.drawLine(x+1, y+15, x+17, y+15);
+				g.drawLine(x+1, y+18, x+13, y+18);
+				g.fillRect(x, y+1, 3, 3);
+				g.fillRect(x+15*scale, y+1, 3, 3);
+				return;
+			case ROI_LABEL:
+				xOffset = x; yOffset = y;
+				g.drawLine(x+2, y+15, x+17, y+15);
+				g.drawLine(x+2, y+12, x+2, y+18);
+				g.drawLine(x+17, y+12, x+17, y+18);
+				g.drawString("L", x+7, y+11);
 				return;
 			case HAND:
 				xOffset = x; yOffset = y;
@@ -673,7 +690,10 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 				IJ.showStatus("Text tool (double-click to configure)");
 				return;
 			case MAGNIFIER:
-				IJ.showStatus("Magnifying glass (or \"+\" and \"-\" keys; alt or long click for menu)");
+				IJ.showStatus("ROI Manager (click to open)");
+				return;
+			case ROI_LABEL:
+				IJ.showStatus("Label ROI lengths (diameters)");
 				return;
 			case HAND:
 				IJ.showStatus("Scrolling tool (or press space bar and drag)");
@@ -837,17 +857,41 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 			case POINT: return Prefs.multiPointMode?"multipoint":"point";
 			case WAND: return "wand";
 			case TEXT: return "text";
+			case ROI_MANAGER: return "roi-manager";
+			case ROI_LABEL: return "roi-label";
 			case HAND: return "hand";
-			case MAGNIFIER: return "hand";
 			case DROPPER: return "dropper";
 			default: return null;
 		}
 		
 	}
 	
+	private void openRoiManager() {
+		RoiManager rm = RoiManager.getRoiManager();
+		if (rm!=null) {
+			rm.setAlwaysOnTop(true);
+			rm.toFront();
+		}
+	}
+
+	private void labelRois() {
+		RoiManager rm = RoiManager.getRoiManager();
+		if (rm==null || rm.getCount()==0) {
+			IJ.showStatus("ROI Manager is empty");
+			return;
+		}
+		new ROILabeler().run("");
+	}
+
 	public void setTool(int tool) {
-		if (tool==MAGNIFIER)
-			tool = HAND; // The magnifying glass was replaced by wheel zoom.
+		if (tool==ROI_MANAGER) {
+			openRoiManager();
+			return;
+		}
+		if (tool==ROI_LABEL) {
+			labelRois();
+			return;
+		}
 		if (tool==UNUSED)  //  "Unused" (blank) tool replaced with gap in 1.48h
 			tool = CUSTOM1;
 		else if (legacyMode && tool>=CUSTOM1)
@@ -1091,18 +1135,20 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 			case POINT: return 6;
 			case WAND: return 7;
 			case TEXT: return 8;
-			case MAGNIFIER: return -1;
+			case MAGNIFIER: return 11;
+			case ROI_LABEL: return 12;
 			case HAND: return 9;
 			case DROPPER: return 10;
 			case ANGLE: return 5;
-			case UNUSED: return 11;
-			default: return tool - 3;
+			case UNUSED: return 13;
+			case MORE_TOOLS: return 21;
+			default: return tool - 1;
 		}
     }
 
 	// Returns the tool corresponding to the specified x coordinate
 	private int toolID(int x) {
-		if (x>buttonWidth*11+gapSize)
+		if (x>buttonWidth*13+gapSize)
 			x -= gapSize;
 		int index = x/buttonWidth;
     	switch (index) {
@@ -1117,12 +1163,16 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 			case 8: return TEXT;
 			case 9: return HAND;
 			case 10: return DROPPER;
-			default: return index + 4;
+			case 11: return MAGNIFIER;
+			case 12: return ROI_LABEL;
+			default:
+				if (index==20) return MORE_TOOLS;
+				return index + 2;
 		}
     }
     
 	private boolean inGap(int x) {
-		return x>=(buttonWidth*11) && x<(buttonWidth*11+gapSize);
+		return x>=(buttonWidth*13) && x<(buttonWidth*13+gapSize);
  	}
 
 	public void triggerPopupMenu(int newTool, MouseEvent e, boolean isRightClick, boolean isLongPress) {
@@ -1206,6 +1256,14 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 		if (inGap(x))
 			return;
  		final int newTool = toolID(x);
+		if (newTool==ROI_MANAGER) {
+			openRoiManager();
+			return;
+		}
+		if (newTool==ROI_LABEL) {
+			labelRois();
+			return;
+		}
 		if (newTool==getNumTools()-1) {
 			showSwitchPopupMenu(e);
 			return;

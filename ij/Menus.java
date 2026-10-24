@@ -891,7 +891,7 @@ public class Menus {
 					mbar = new MenuBar();
 				if (menuName.equals("Help"))
 					mbar.setHelpMenu(result);
-				else
+				else if (!menuName.equals("Window"))
 					mbar.add(result);
 				if (menuName.equals("Window"))
 					window = result;

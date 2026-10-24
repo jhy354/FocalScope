@@ -2,6 +2,10 @@ package ij;
 import ij.plugin.Converter;
 import ij.plugin.frame.Recorder;
 import ij.plugin.frame.Editor; 
+import ij.plugin.frame.ContrastAdjuster;
+import ij.plugin.frame.ThresholdAdjuster;
+import ij.plugin.frame.Channels;
+import ij.plugin.frame.RoiManager;
 import ij.text.TextWindow;
 import ij.plugin.frame.PlugInFrame;
 import ij.plugin.frame.Commands;
@@ -299,6 +303,8 @@ public class WindowManager {
 		else {
 			Menus.insertWindowMenuItem(win);
 			nonImageList.add(win);
+			if (isUtilityWindow(win))
+				((Frame)win).setAlwaysOnTop(true);
  		}
 		final Window window = win;
 		EventQueue.invokeLater(new Runnable() {
@@ -307,6 +313,14 @@ public class WindowManager {
 			}
 		});
     }
+
+	private static boolean isUtilityWindow(Window win) {
+		if (!(win instanceof Frame) || win instanceof Editor)
+			return false;
+		return win instanceof RoiManager || win instanceof TextWindow
+			|| win instanceof ContrastAdjuster || win instanceof ThresholdAdjuster
+			|| win instanceof Channels;
+	}
 
 	/** Adds the specified Frame to the Window menu. */
 	public static void addWindow(Frame win) {
