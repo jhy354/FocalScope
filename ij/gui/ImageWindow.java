@@ -578,7 +578,12 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		if (!IJ.isMacro()) {
 			Prefs.setIJMenuBar = true;
 			if (imp!=null) imp.setIJMenuBar(true);
+			MenuBar previousMenuBar = getMenuBar();
 			setImageJMenuBar(this);
+			// Adding a native menu bar increases the top inset. Repack so the
+			// status bar at the bottom stays inside the frame.
+			if (getMenuBar()!=previousMenuBar)
+				pack();
 		}
 		if (main!=null)
 			main.setVisible(false);
