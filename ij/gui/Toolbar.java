@@ -1117,7 +1117,7 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 			case 8: return TEXT;
 			case 9: return HAND;
 			case 10: return DROPPER;
-			default: return index + 3;
+			default: return index + 4;
 		}
     }
     
