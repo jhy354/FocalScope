@@ -6,6 +6,7 @@
 /*.jar
 /build/
 /target/
+/dist/
 
 # Eclipse
 /.classpath
