@@ -30,11 +30,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ij.I18n;
 
 /** Shared colors and fonts for the ImageX application shell. */
 public final class UITheme {
+
+	private static final String[] SUPPORTED_IMAGE_EXTENSIONS = {
+		"tif", "tiff", "png", "jpg", "jpeg", "jpe", "jfif", "gif",
+		"bmp", "dib", "dcm", "dicom", "ima", "fits", "fit", "fts",
+		"fits.gz", "fts.gz", "pgm", "ppm", "pbm", "pnm"
+	};
 
 	public static final Color BACKGROUND = new Color(245, 246, 248);
 	public static final Color CARD = new Color(255, 255, 255);
@@ -109,6 +116,13 @@ public final class UITheme {
 		chooser.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		styleComponent(chooser);
 		configureFileList(chooser);
+	}
+
+	public static void setSupportedImageFilter(JFileChooser chooser) {
+		if (chooser==null) return;
+		chooser.setAcceptAllFileFilterUsed(false);
+		chooser.setFileFilter(new FileNameExtensionFilter("支持的图像文件",
+			SUPPORTED_IMAGE_EXTENSIONS));
 	}
 
 	private static JList<?> findList(Container container) {

@@ -65,7 +65,7 @@ public class Opener {
 	 * @see ij.IJ#openImage(String)
 	*/
 	public void open() {
-		OpenDialog od = new OpenDialog("Open", "");
+		OpenDialog od = new OpenDialog("Open", "", true);
 		String directory = od.getDirectory();
 		String name = od.getFileName();
 		if (name!=null) {
@@ -415,7 +415,7 @@ public class Opener {
 	}
 	
 	String getPath() {
-		OpenDialog od = new OpenDialog("Open", "");
+		OpenDialog od = new OpenDialog("Open", "", true);
 		String dir = od.getDirectory();
 		String name = od.getFileName();
 		if (name==null)

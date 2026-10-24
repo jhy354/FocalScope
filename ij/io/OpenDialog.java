@@ -22,6 +22,7 @@ public class OpenDialog {
 	private String title;
 	private static String lastDir, lastName;
 	private static boolean defaultDirectorySet;
+	private boolean imageOnly;
 
 	
 	/** Displays a file open dialog with 'title' as the title. */
@@ -34,6 +35,13 @@ public class OpenDialog {
 		used and the dialog is not displayed. Uses
 		and updates the ImageJ default directory. */
 	public OpenDialog(String title, String path) {
+		this(title, path, false);
+	}
+
+	/** Displays a file open dialog. If 'imageOnly' is true, the
+		dialog only lists image formats that ImageX can open. */
+	public OpenDialog(String title, String path, boolean imageOnly) {
+		this.imageOnly = imageOnly;
 		String macroOptions = Macro.getOptions();
 		if (macroOptions!=null && (path==null||path.equals(""))) {
 			path = Macro.getValue(macroOptions, title, path);
@@ -106,6 +114,8 @@ public class OpenDialog {
 	void jOpenDispatchThread(String title, String path, final String fileName) {
 		JFileChooser fc = new JFileChooser();
 		UITheme.styleFileChooser(fc, title, false);
+		if (imageOnly)
+			UITheme.setSupportedImageFilter(fc);
 		fc.setDialogTitle(title);
 		fc.setDragEnabled(true);
 		fc.setTransferHandler(new DragAndDropHandler(fc));
@@ -134,6 +144,8 @@ public class OpenDialog {
 				public void run() {
 				JFileChooser fc = new JFileChooser();
 				UITheme.styleFileChooser(fc, title, false);
+				if (imageOnly)
+					UITheme.setSupportedImageFilter(fc);
 				fc.setDialogTitle(title);
 				fc.setDragEnabled(true);
 				fc.setTransferHandler(new DragAndDropHandler(fc));

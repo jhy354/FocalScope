@@ -74,14 +74,10 @@ public class WelcomePanel extends Canvas {
 		g.setFont(UITheme.font(Font.BOLD, 34));
 		drawCentered(g, "ImageX", centerX, logoY + logoSize + 52);
 
-		g.setColor(UITheme.MUTED);
-		g.setFont(UITheme.font(Font.PLAIN, 14));
-		drawCentered(g, "现代图像处理", centerX, logoY + logoSize + 78);
-
 		int bw = 150;
 		int bh = 40;
 		int bx = centerX - bw / 2;
-		int by = logoY + logoSize + 112;
+		int by = logoY + logoSize + 96;
 		openButton.setBounds(bx, by, bw, bh);
 		g.setColor(hover ? UITheme.ACCENT_HOVER : UITheme.ACCENT);
 		g.fillRoundRect(bx, by, bw, bh, 14, 14);
