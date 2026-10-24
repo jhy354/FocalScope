@@ -1,6 +1,5 @@
 package ij.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -26,7 +25,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -130,34 +128,11 @@ public final class UITheme {
 		if (list==null) return;
 		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		list.setVisibleRowCount(-1);
-		list.setFixedCellWidth(112);
-		list.setFixedCellHeight(94);
+		list.setFixedCellWidth(FileGridCellRenderer.CELL_WIDTH);
+		list.setFixedCellHeight(FileGridCellRenderer.CELL_HEIGHT);
+		final FileGridCellRenderer renderer = new FileGridCellRenderer(list);
+		list.setCellRenderer(renderer);
 		final int[] hoverIndex = {-1};
-		list.setCellRenderer(new ListCellRenderer<Object>() {
-			public Component getListCellRendererComponent(JList<?> source, Object value,
-					int index, boolean selected, boolean focus) {
-				JPanel panel = new JPanel(new BorderLayout(0, 2));
-				panel.setOpaque(true);
-				panel.setBackground(selected?ACCENT:(index==hoverIndex[0]?new Color(232, 242, 255):CARD));
-				panel.setBorder(BorderFactory.createEmptyBorder(5, 3, 4, 3));
-				JLabel iconLabel = new JLabel();
-				iconLabel.setHorizontalAlignment(JLabel.CENTER);
-				iconLabel.setVerticalAlignment(JLabel.CENTER);
-				JLabel textLabel = new JLabel();
-				textLabel.setHorizontalAlignment(JLabel.CENTER);
-				textLabel.setFont(font(Font.PLAIN, 12));
-				textLabel.setForeground(selected?Color.WHITE:TEXT);
-				if (value instanceof File) {
-					File file = (File)value;
-					textLabel.setText(file.getName());
-					textLabel.setToolTipText(file.getName());
-					iconLabel.setIcon(new FileTypeIcon(file));
-				}
-				panel.add(iconLabel, BorderLayout.CENTER);
-				panel.add(textLabel, BorderLayout.SOUTH);
-				return panel;
-			}
-		});
 		list.addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseMoved(MouseEvent event) {
 				int index = list.locationToIndex(event.getPoint());
@@ -165,6 +140,7 @@ public final class UITheme {
 				if (bounds==null || !bounds.contains(event.getPoint())) index = -1;
 				if (index!=hoverIndex[0]) {
 					hoverIndex[0] = index;
+					renderer.setHoverIndex(index);
 					list.repaint();
 				}
 			}
@@ -172,6 +148,7 @@ public final class UITheme {
 		list.addMouseListener(new MouseAdapter() {
 			public void mouseExited(MouseEvent event) {
 				hoverIndex[0] = -1;
+				renderer.setHoverIndex(-1);
 				list.repaint();
 			}
 		});

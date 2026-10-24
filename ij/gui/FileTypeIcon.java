@@ -6,21 +6,37 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.swing.Icon;
 
-/** Crisp, flat file/folder icons drawn as vectors. */
+/** Crisp, flat file/folder icons drawn as vectors, or image thumbnails. */
 public class FileTypeIcon implements Icon {
 
 	private static final int SIZE = 40;
+	private static final Color IMAGE_BORDER = new Color(205, 212, 220);
+
 	private final File file;
 	private final Color accent;
+	private final BufferedImage thumbnail;
 
 	public FileTypeIcon(File file) {
+		this(file, null);
+	}
+
+	public FileTypeIcon(File file, Runnable onThumbnailLoaded) {
 		this.file = file;
 		this.accent = accentFor(file);
+		BufferedImage image = null;
+		if (file!=null && !file.isDirectory() && isImage(extension(file.getName().toLowerCase()))) {
+			image = FileThumbnailLoader.get(file);
+			if (image==null)
+				FileThumbnailLoader.request(file, onThumbnailLoaded);
+		}
+		this.thumbnail = image;
 	}
 
 	public int getIconWidth() {
@@ -38,9 +54,26 @@ public class FileTypeIcon implements Icon {
 		g.translate(x, y);
 		if (file!=null && file.isDirectory())
 			paintFolder(g);
+		else if (thumbnail!=null)
+			paintThumbnail(g);
 		else
 			paintFile(g);
 		g.dispose();
+	}
+
+	private void paintThumbnail(Graphics2D g) {
+		Shape oldClip = g.getClip();
+		g.setColor(Color.WHITE);
+		g.fillRoundRect(2, 2, 36, 36, 7, 7);
+		g.setClip(new RoundRectangle2D.Float(2, 2, 36, 36, 7, 7));
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+			RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.drawImage(thumbnail, 2, 2, 36, 36, null);
+		g.setClip(oldClip);
+		g.setColor(IMAGE_BORDER);
+		g.setStroke(new BasicStroke(1f));
+		g.drawRoundRect(2, 2, 35, 35, 7, 7);
 	}
 
 	private void paintFolder(Graphics2D g) {
@@ -112,7 +145,9 @@ public class FileTypeIcon implements Icon {
 
 	private static boolean isImage(String ext) {
 		return "tif".equals(ext) || "tiff".equals(ext) || "png".equals(ext) || "jpg".equals(ext)
-			|| "jpeg".equals(ext) || "gif".equals(ext) || "bmp".equals(ext) || "webp".equals(ext);
+			|| "jpeg".equals(ext) || "gif".equals(ext) || "bmp".equals(ext) || "webp".equals(ext)
+			|| "dcm".equals(ext) || "dicom".equals(ext) || "fits".equals(ext)
+			|| "fit".equals(ext) || "pgm".equals(ext);
 	}
 
 	private static boolean isText(String ext) {
