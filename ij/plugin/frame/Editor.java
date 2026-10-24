@@ -172,6 +172,7 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 			ta.requestFocus(); // needed for selections to show
 		if (!IJ.isJava18() && !IJ.isLinux())
 			insertSpaces = false;
+		I18n.translateWindow(this);
 	}
 	
 	private static int getOptions(String name) {

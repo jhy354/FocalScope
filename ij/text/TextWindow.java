@@ -103,6 +103,7 @@ public class TextWindow extends Frame implements ActionListener, FocusListener, 
  			textPanel.title = title2;
  		}
  		addMenuBar();
+		I18n.translateWindow(this);
 		setFont();
 		WindowManager.addWindow(this);
 		Point loc=null;

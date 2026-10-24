@@ -294,12 +294,18 @@ public class WindowManager {
 	public synchronized static void addWindow(Window win) {
 		if (win==null)
 			return;
-		else if (win instanceof ImageWindow)
+		if (win instanceof ImageWindow)
 			addImageWindow((ImageWindow)win);
 		else {
 			Menus.insertWindowMenuItem(win);
 			nonImageList.add(win);
  		}
+		final Window window = win;
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				I18n.translateWindow(window);
+			}
+		});
     }
 
 	/** Adds the specified Frame to the Window menu. */
