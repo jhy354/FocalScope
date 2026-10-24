@@ -630,10 +630,17 @@ public class ImageJ extends Frame implements ActionListener,
 		return false;
 	}
 	
+	private boolean isWindowTitle(String title, String name) {
+		if (title==null) return false;
+		if (name.equals(title)) return true;
+		String translated = I18n.label(name);
+		return translated!=null && translated.equals(title);
+	}
+
 	private boolean ignoreArrowKeys(ImagePlus imp, boolean control) {
 		Frame frame = WindowManager.getFrontWindow();
 		String title = frame!=null?frame.getTitle():null;
-		if (title!=null && title.equals("ROI Manager"))
+		if (frame instanceof RoiManager || isWindowTitle(title, "ROI Manager"))
 			return true;
 		// Control Panel?
 		if (frame!=null && frame instanceof javax.swing.JFrame)
@@ -641,7 +648,7 @@ public class ImageJ extends Frame implements ActionListener,
 		// Channels dialog?
 		Window window = WindowManager.getActiveWindow();
 		title = window!=null&&(window instanceof Dialog)?((Dialog)window).getTitle():null;
-		if (title!=null && title.equals("Channels"))
+		if (isWindowTitle(title, "Channels"))
 			return true;
 		ImageWindow win = imp.getWindow();
 		// LOCI Data Browser window?
