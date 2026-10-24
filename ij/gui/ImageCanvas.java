@@ -774,6 +774,7 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 		newY = clamp(newY, 0, imageHeight-newHeight);
 		srcRect = new Rectangle(newX, newY, newWidth, newHeight);
 		magnification = newMag;
+		imp.setTitle(imp.getTitle());
 		repaint();
 	}
 

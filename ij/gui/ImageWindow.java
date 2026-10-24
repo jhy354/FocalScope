@@ -36,7 +36,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	private int sliderHeight;
 	private Panel toolbarPanel;
 	private Panel canvasPanel;
-	private Label statusLabel;
+	private StatusBar statusLabel;
 	boolean fillCanvas;
 	private static final int XINC = 12;
 	private static final int YINC = 16;
@@ -100,10 +100,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		canvasPanel.add(ic);
 		ic.setBackground(UITheme.CANVAS);
 		add(canvasPanel, BorderLayout.CENTER);
-		statusLabel = new Label(" ");
-		statusLabel.setFont(UITheme.font(Font.PLAIN, 12));
-		statusLabel.setBackground(UITheme.STATUS);
-		statusLabel.setForeground(UITheme.MUTED);
+		statusLabel = new StatusBar();
 		add(statusLabel, BorderLayout.SOUTH);
 		setStatusText(null);
 		addComponentListener(new ComponentAdapter() {
