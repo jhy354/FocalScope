@@ -80,7 +80,7 @@ public class ImageJ extends Frame implements ActionListener,
 	/** Plugins should call IJ.getVersion() or IJ.getFullVersion() to get the version string. */
 	public static final String VERSION = "2.0.5";
 	public static final String BUILD = "";
-	public static Color backgroundColor = new Color(237,237,237);
+	public static Color backgroundColor = UITheme.BACKGROUND;
 	/** SansSerif, 12-point, plain font. */
 	public static final Font SansSerif12 = new Font("SansSerif", Font.PLAIN, 12);
 	/** SansSerif, 14-point, plain font. */
@@ -167,20 +167,22 @@ public class ImageJ extends Frame implements ActionListener,
 		
 		// Tool bar
 		toolbar = new Toolbar();
+		toolbar.setBackground(UITheme.CARD);
 		toolbar.addKeyListener(this);
 		toolbarHost = new Panel(new BorderLayout());
 		toolbarHost.add(toolbar, BorderLayout.CENTER);
 		toolbarHost.setVisible(false);
 		add("Center", toolbarHost);
+		add("Center", new WelcomePanel());
 
 		// Status bar
 		statusBar = new Panel();
 		statusBar.setLayout(new BorderLayout());
-		statusBar.setForeground(Color.black);
-		statusBar.setBackground(backgroundColor);
+		statusBar.setForeground(UITheme.TEXT);
+		statusBar.setBackground(UITheme.STATUS);
 		statusLine = new JLabel();
 		double scale = Prefs.getGuiScale();
-		statusLine.setFont(new Font("SansSerif", Font.PLAIN, (int)(13*scale)));
+		statusLine.setFont(UITheme.font(Font.PLAIN, (int)(13*scale)));
 		statusLine.addKeyListener(this);
 		statusLine.addMouseListener(this);
 		statusBar.add("Center", statusLine);
@@ -947,7 +949,7 @@ public class ImageJ extends Frame implements ActionListener,
 	public void resize() {
 		double scale = Prefs.getGuiScale();
 		toolbar.init();
-		statusLine.setFont(new Font("SansSerif", Font.PLAIN, (int)(13*scale)));
+		statusLine.setFont(UITheme.font(Font.PLAIN, (int)(13*scale)));
 		progressBar.init((int)(ProgressBar.WIDTH*scale), (int)(ProgressBar.HEIGHT*scale));
 		pack();
 	}

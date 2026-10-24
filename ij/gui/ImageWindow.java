@@ -79,11 +79,8 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 			setForeground(Color.white);
 			setBackground(Color.black);
 		} else {
-			setForeground(Color.black);
-		if (IJ.isLinux())
-			setBackground(ImageJ.backgroundColor);
-		else
-			setBackground(Color.white);
+			setForeground(UITheme.TEXT);
+			setBackground(UITheme.BACKGROUND);
 		}
 		boolean openAsHyperStack = imp.getOpenAsHyperStack();
 		ij = IJ.getInstance();
@@ -96,13 +93,17 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		ImageWindow previousWindow = imp.getWindow();
 		setLayout(new BorderLayout());
 		toolbarPanel = new Panel(new BorderLayout());
+		toolbarPanel.setBackground(UITheme.CARD);
 		add(toolbarPanel, BorderLayout.NORTH);
 		canvasPanel = new Panel(new ImageLayout(ic));
+		canvasPanel.setBackground(UITheme.CANVAS);
 		canvasPanel.add(ic);
+		ic.setBackground(UITheme.CANVAS);
 		add(canvasPanel, BorderLayout.CENTER);
 		statusLabel = new Label(" ");
-		statusLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
-		statusLabel.setBackground(ImageJ.backgroundColor);
+		statusLabel.setFont(UITheme.font(Font.PLAIN, 12));
+		statusLabel.setBackground(UITheme.STATUS);
+		statusLabel.setForeground(UITheme.MUTED);
 		statusLabel.setText(imp.getTitle()+"  "+imp.getWidth()+"x"+imp.getHeight());
 		add(statusLabel, BorderLayout.SOUTH);
 		addComponentListener(new ComponentAdapter() {

@@ -111,6 +111,9 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		if (Prefs.blackCanvas) {
 			setForeground(SystemColor.controlText);
 			setBackground(SystemColor.control);
+		} else {
+			setForeground(UITheme.TEXT);
+			setBackground(UITheme.BACKGROUND);
 		}
 		//if (IJ.isMacOSX() && System.getProperty("java.vendor").contains("Azul"))
 		//	setForeground(Color.black);	 // work around bug on Azul Java 8 on Apple Silicon
